@@ -9,7 +9,7 @@ Todo-list using Domino implementing UI with three different ways:
 
 1. clone the respository
 
-2. run `mvn clean package` to compile with UiBinders and Material design or run `mvn clean package -Dui=polymer` to compile with elemento and polymer web components
+2. run `mvn clean install` to compile with UiBinders and Material design or run `mvn clean install -Dui=polymer` to compile with elemento and polymer web components
 
 ## How to run :
 - Running as web application :
