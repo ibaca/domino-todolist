@@ -5,9 +5,9 @@ import com.progressoft.brix.domino.desktop.client.CoreModule;
 
 import java.util.logging.Logger;
 
-public class AppClientModule {
+public class DesktopClientModule {
 
-    private static final Logger LOGGER = Logger.getLogger(AppClientModule.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DesktopClientModule.class.getName());
 
     public static void main(String[] args) {
         CoreModule.init();

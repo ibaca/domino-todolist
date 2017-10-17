@@ -17,7 +17,7 @@
       --paper-icon-button-ink-color: white;
     }
 
-    paper-icon-button + [main-title] {
+    paper-icon-button + [main-itemTitle] {
       margin-left: 24px;
     }
 
@@ -62,8 +62,8 @@
     <app-header reveals>
         <app-toolbar>
             <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button>
-            <div main-title>Todo List</div>
-            <paper-icon-button icon="add" id="btn" data-element="addButton" title="Add">
+            <div main-itemTitle>Todo List</div>
+            <paper-icon-button icon="add" id="btn" data-element="addButton" itemTitle="Add">
             </paper-icon-button>
         </app-toolbar>
         <div class="content" data-element="content"></div>

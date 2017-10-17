@@ -8,12 +8,14 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.progressoft.brix.domino.api.client.annotations.UiView;
 import com.progressoft.brix.domino.sample.items.client.presenters.ItemsPresenter;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import gwt.material.design.client.ui.MaterialCollection;
 import gwt.material.design.client.ui.MaterialContainer;
 import gwt.material.design.client.ui.MaterialPanel;
 import jsinterop.base.Js;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutContent;
 
@@ -28,6 +30,7 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
 
     @UiField
     MaterialCollection itemsCollection;
+    private Consumer<TodoItem> changeHandler;
 
     @Override
     public MaterialContainer get() {
@@ -78,8 +81,8 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     }
 
     @Override
-    public void addItem(String title, String description, SuccessAddHandler successAddHandler) {
-        Item item = Item.create().init(title, description);
+    public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
+        Item item = Item.create(changeHandler).init(title, description, done);
         itemsCollection.add(item);
         successAddHandler.onSuccess(item);
     }
@@ -93,5 +96,10 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     public void remove(List<TodoItem> doneItems) {
         doneItems.stream().map(todoItem -> ((Item) Js.cast(todoItem)))
                 .forEach(w -> itemsCollection.remove(w));
+    }
+
+    @Override
+    public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
+        this.changeHandler = changeHandler;
     }
 }

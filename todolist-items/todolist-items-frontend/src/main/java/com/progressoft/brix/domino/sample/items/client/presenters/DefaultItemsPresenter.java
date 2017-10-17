@@ -2,7 +2,12 @@ package com.progressoft.brix.domino.sample.items.client.presenters;
 
 import com.progressoft.brix.domino.api.client.annotations.Presenter;
 import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
+import com.progressoft.brix.domino.sample.items.client.requests.AddItemServerRequest;
+import com.progressoft.brix.domino.sample.items.client.requests.ClearAllServerRequest;
+import com.progressoft.brix.domino.sample.items.client.requests.LoadItemsServerRequest;
+import com.progressoft.brix.domino.sample.items.client.requests.ToggleItemServerRequest;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.*;
+import static com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse.Item;
+import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutMenuItem;
 
 
 @Presenter
@@ -19,16 +25,24 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultItemsPresenter.class);
 
-    private List<ItemsView.TodoItem> addedItems = new ArrayList<>();
+    private List<TodoItem> addedItems = new ArrayList<>();
 
     @Override
     public void initView(ItemsView view) {
-        view.addNewItemHandler((title, description) -> view.addItem(title, description, item -> addedItems.add(item)));
+        view.addNewItemHandler(this::addItem);
+        view.onItemStateChanged(todoItem -> {
+            new ToggleItemServerRequest(todoItem.getItemTitle()).send();
+        });
+    }
+
+    private void addItem(String title, String description) {
+        view.addItem(title, description, false, item -> new AddItemServerRequest(item).send());
     }
 
     @Override
     public void contributeToLayoutModule(LayoutContext context) {
 
+        new LoadItemsServerRequest().send();
         context.setContent(view.getContent());
 
         context.addMenuItem(new MenuItem("delete", "Clear All", () -> {
@@ -47,13 +61,31 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     }
 
+    @Override
+    public void onItemAdded(TodoItem item) {
+        addedItems.add(item);
+    }
+
+    @Override
+    public void onItemsLoaded(List<Item> items) {
+        items.forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone(), addedItem -> addedItems.add(addedItem)));
+    }
+
+    @Override
+    public void onItemsCleared(boolean cleared) {
+        if (cleared) {
+            view.clearAll();
+            addedItems.clear();
+        } else
+            LOGGER.error("Error while clearing all items");
+    }
+
     private void clearAll() {
-        view.clearAll();
-        addedItems.clear();
+        new ClearAllServerRequest().send();
     }
 
     private void removeDoneItems() {
-        List<ItemsView.TodoItem> doneItems = addedItems.stream().filter(ItemsView.TodoItem::isDone).collect(Collectors.toList());
+        List<TodoItem> doneItems = addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList());
         view.remove(doneItems);
         addedItems.removeAll(doneItems);
     }

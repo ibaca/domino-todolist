@@ -1,8 +1,10 @@
 package com.progressoft.brix.domino.sample.items.client.views;
 
 import com.progressoft.brix.domino.api.client.mvp.view.View;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutContent;
 
@@ -14,11 +16,13 @@ public interface ItemsView extends View{
 
     void addNewItemHandler(NewItemHandler newItemHandler);
 
-    void addItem(String title, String description, SuccessAddHandler successAddHandler);
+    void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler);
 
     void clearAll();
 
     void remove(List<TodoItem> doneItems);
+
+    void onItemStateChanged(Consumer<TodoItem> changeHandler);
 
     @FunctionalInterface
     interface NewItemHandler {
@@ -27,9 +31,5 @@ public interface ItemsView extends View{
 
     interface SuccessAddHandler {
         void onSuccess(TodoItem item);
-    }
-
-    interface TodoItem{
-        boolean isDone();
     }
 }

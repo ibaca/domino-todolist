@@ -3,6 +3,7 @@ package com.progressoft.domino.tutorial.items.client.ui.views;
 import com.progressoft.brix.domino.api.client.annotations.UiView;
 import com.progressoft.brix.domino.sample.items.client.presenters.ItemsPresenter;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -11,13 +12,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.util.Pair;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @UiView(presentable = ItemsPresenter.class)
 public class DesktopItemsView implements ItemsView {
@@ -25,6 +24,7 @@ public class DesktopItemsView implements ItemsView {
 
     private final VBox vBox = new VBox();
     private NewItemHandler newItemHandler;
+    private Consumer<TodoItem> changeHandler;
 
     @Override
     public void showAdd() {
@@ -89,45 +89,14 @@ public class DesktopItemsView implements ItemsView {
     }
 
     @Override
-    public void addItem(String title, String description, SuccessAddHandler successAddHandler) {
-        CenterItem pane = new CenterItem();
-        pane.setMinHeight(50);
-        pane.setMinWidth(vBox.getMinWidth() - 100);
-        pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        pane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(3), BorderStroke.DEFAULT_WIDTHS)));
-
-        VBox itemBox = new VBox();
-        itemBox.setSpacing(5);
-        HBox item = new HBox();
-        item.setPadding(new Insets(10));
-        item.setSpacing(10);
-        CheckBox checkBox = new CheckBox();
-
-        item.getChildren().add(checkBox);
-
-        Text titleLabel = new Text(title);
-        titleLabel.setFont(Font.font("Sans-serif", FontWeight.BOLD, 14));
-        item.getChildren().add(titleLabel);
-
-        itemBox.getChildren().add(item);
-
-
-        Text descriptionLabel = new Text(description);
-        descriptionLabel.setFont(Font.font("Sans-serif", FontWeight.BOLD, 14));
-        HBox descriptionContainer = new HBox();
-        descriptionContainer.setPadding(new Insets(0, 0, 5, 10));
-        descriptionContainer.getChildren().add(descriptionLabel);
-        itemBox.getChildren().add(descriptionContainer);
-
-        pane.getChildren().add(itemBox);
-
-        vBox.getChildren().add(pane);
-        checkBox.setOnAction(event -> {
-            descriptionLabel.setStrikethrough(checkBox.isSelected());
-            titleLabel.setStrikethrough(checkBox.isSelected());
-            pane.setDone(checkBox.isSelected());
-        });
-        successAddHandler.onSuccess(pane);
+    public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
+        TodoItemPanel todoItem = new TodoItemPanel(title, description, done, changeHandler);
+        todoItem.setMinHeight(50);
+        todoItem.setMinWidth(vBox.getMinWidth() - 100);
+        todoItem.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        todoItem.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(3), BorderStroke.DEFAULT_WIDTHS)));
+        vBox.getChildren().add(todoItem);
+        successAddHandler.onSuccess(todoItem);
     }
 
     @Override
@@ -138,20 +107,12 @@ public class DesktopItemsView implements ItemsView {
 
     @Override
     public void remove(List<TodoItem> doneItems) {
-        doneItems.stream().map(d -> (CenterItem) d).forEach(p -> vBox.getChildren().remove(p));
+        doneItems.stream().map(d -> (TodoItemPanel) d).forEach(p -> vBox.getChildren().remove(p));
     }
 
-    private class CenterItem extends HBox implements TodoItem {
-
-        private boolean done;
-
-        @Override
-        public boolean isDone() {
-            return done;
-        }
-
-        public void setDone(boolean done) {
-            this.done = done;
-        }
+    @Override
+    public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
+        this.changeHandler = changeHandler;
     }
+
 }

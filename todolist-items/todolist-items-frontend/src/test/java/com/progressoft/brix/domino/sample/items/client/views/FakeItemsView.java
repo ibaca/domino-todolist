@@ -1,13 +1,14 @@
 package com.progressoft.brix.domino.sample.items.client.views;
 
-import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
-import com.progressoft.brix.domino.sample.items.client.presenters.ItemsPresenter;
 import com.progressoft.brix.domino.api.client.annotations.UiView;
+import com.progressoft.brix.domino.sample.items.client.presenters.ItemsPresenter;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-@UiView(presentable=ItemsPresenter.class)
+@UiView(presentable = ItemsPresenter.class)
 public class FakeItemsView implements ItemsView {
 
     @Override
@@ -26,7 +27,7 @@ public class FakeItemsView implements ItemsView {
     }
 
     @Override
-    public void addItem(String title, String description, SuccessAddHandler successAddHandler) {
+    public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
 
     }
 
@@ -37,6 +38,11 @@ public class FakeItemsView implements ItemsView {
 
     @Override
     public void remove(List<TodoItem> doneItems) {
+
+    }
+
+    @Override
+    public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
 
     }
 }
