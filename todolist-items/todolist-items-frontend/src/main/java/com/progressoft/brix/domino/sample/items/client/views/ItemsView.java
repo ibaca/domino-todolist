@@ -18,9 +18,7 @@ public interface ItemsView extends View{
 
     void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler);
 
-    void clearAll();
-
-    void remove(List<TodoItem> doneItems);
+    void remove(TodoItem item);
 
     void onItemStateChanged(Consumer<TodoItem> changeHandler);
 

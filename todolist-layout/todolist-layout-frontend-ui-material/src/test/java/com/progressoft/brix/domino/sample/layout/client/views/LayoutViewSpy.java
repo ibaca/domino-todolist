@@ -4,5 +4,4 @@ import com.progressoft.brix.domino.sample.layout.client.ui.views.DefaultLayoutVi
 
 public class LayoutViewSpy extends DefaultLayoutView {
 
-
 }

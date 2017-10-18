@@ -14,7 +14,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -90,24 +89,20 @@ public class DesktopItemsView implements ItemsView {
 
     @Override
     public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
-        TodoItemPanel todoItem = new TodoItemPanel(title, description, done, changeHandler);
-        todoItem.setMinHeight(50);
-        todoItem.setMinWidth(vBox.getMinWidth() - 100);
-        todoItem.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        todoItem.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(3), BorderStroke.DEFAULT_WIDTHS)));
-        vBox.getChildren().add(todoItem);
-        successAddHandler.onSuccess(todoItem);
+        Platform.runLater(() -> {
+            TodoItemPanel todoItem = new TodoItemPanel(title, description, done, changeHandler);
+            todoItem.setMinHeight(50);
+            todoItem.setMinWidth(vBox.getMinWidth() - 100);
+            todoItem.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+            todoItem.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(3), BorderStroke.DEFAULT_WIDTHS)));
+            vBox.getChildren().add(todoItem);
+            successAddHandler.onSuccess(todoItem);
+        });
     }
 
     @Override
-    public void clearAll() {
-        vBox.getChildren().clear();
-
-    }
-
-    @Override
-    public void remove(List<TodoItem> doneItems) {
-        doneItems.stream().map(d -> (TodoItemPanel) d).forEach(p -> vBox.getChildren().remove(p));
+    public void remove(TodoItem item) {
+        Platform.runLater(() -> vBox.getChildren().remove(item));
     }
 
     @Override

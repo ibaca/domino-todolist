@@ -1,24 +1,30 @@
 package com.progressoft.brix.domino.sample.items.client.presenters;
 
-import com.progressoft.brix.domino.sample.items.client.presenters.DefaultItemsPresenter;
-import com.progressoft.brix.domino.api.shared.extension.MainContext;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
+import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
+
+import java.util.List;
 
 public class ItemsPresenterSpy extends DefaultItemsPresenter{
 
-    private MainContext mainContext;
+    private LayoutContext layoutContext;
 
-//    @Override
-//    public void contributeToMainModule(MainContext context) {
-//        super.contributeToMainModule(context);
-//        this.mainContext=context;
-//    }
-
-    public MainContext getMainContext() {
-        return mainContext;
+    @Override
+    public void contributeToLayoutModule(LayoutContext context) {
+        super.contributeToLayoutModule(context);
+        this.layoutContext=context;
     }
 
     @Override
     protected String getConcrete() {
         return DefaultItemsPresenter.class.getCanonicalName();
+    }
+
+    public LayoutContext getLayoutContext() {
+        return layoutContext;
+    }
+
+    public List<TodoItem> getItems() {
+        return addedItems;
     }
 }

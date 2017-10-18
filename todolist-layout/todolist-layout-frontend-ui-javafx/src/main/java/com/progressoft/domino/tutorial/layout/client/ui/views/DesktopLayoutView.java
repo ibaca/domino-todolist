@@ -24,9 +24,7 @@ import javafx.stage.Stage;
 
 @UiView(presentable = LayoutPresenter.class)
 public class DesktopLayoutView extends Application implements LayoutView {
-    private static ClickHandler handler;
     private HBox hbox;
-    private static Stage primaryStage;
     private static VBox menu;
     private static VBox center;
     private static ShowingHandler showingHandler;
@@ -67,26 +65,8 @@ public class DesktopLayoutView extends Application implements LayoutView {
     }
 
     @Override
-    public void addClickHandler(ClickHandler handler) {
-        DesktopLayoutView.handler = handler;
-    }
-
-    @Override
-    public void showAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Look, an Information Dialog");
-        alert.setContentText("I have a great message for you!");
-
-        alert.showAndWait();
-    }
-
-    @Override
     public void start(Stage primaryStage) throws Exception {
-        DesktopLayoutView.primaryStage = primaryStage;
-        primaryStage.setOnShowing(event -> {
-            showingHandler.onShow();
-        });
+        primaryStage.setOnShowing(event -> showingHandler.onShow());
         BorderPane border = new BorderPane();
         hbox = new HBox();
         border.setTop(hbox);

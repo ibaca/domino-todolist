@@ -14,15 +14,7 @@ public interface LayoutView extends View {
 
     void closeMenu();
 
-    void addClickHandler(ClickHandler handler);
-
-    void showAlert();
-
     interface ShowingHandler {
         void onShow();
-    }
-
-    interface ClickHandler {
-        void handle();
     }
 }

@@ -27,16 +27,6 @@ public class DefaultLayoutView extends Composite implements LayoutView {
     @UiField
     MaterialSideNavPush sideNav;
 
-    @Override
-    public void addClickHandler(ClickHandler handler) {
-
-    }
-
-    @Override
-    public void showAlert() {
-
-    }
-
     @UiField
     MaterialContainer mainContent;
 

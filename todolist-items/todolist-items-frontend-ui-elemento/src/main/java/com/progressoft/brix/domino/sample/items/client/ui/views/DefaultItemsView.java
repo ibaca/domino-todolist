@@ -56,20 +56,12 @@ public class DefaultItemsView implements ItemsView {
     }
 
     @Override
-    public void clearAll() {
-        while (itemsList.asElement().hasChildNodes()) {
-            itemsList.asElement().removeChild(itemsList.asElement().firstChild);
-        }
-    }
-
-    @Override
-    public void remove(List<TodoItem> doneItems) {
-        doneItems.stream().map(todoItem -> ((Item) Js.cast(todoItem)).asElement())
-                .forEach(i -> itemsList.asElement().removeChild(i));
+    public void remove(TodoItem item) {
+        itemsList.asElement().removeChild(((Item) Js.cast(item)).asElement());
     }
 
     @Override
     public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
-        this.changeHandler=changeHandler;
+        this.changeHandler = changeHandler;
     }
 }
