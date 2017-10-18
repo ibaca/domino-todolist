@@ -31,7 +31,7 @@ Todo-list using Domino implementing UI with three different ways:
 
 - Running the desktop version
   - in a terminal `cd todolist-desktop-frontend`
-  - execute `mvn exec:java`
+  - execute `mvn exec:java  -Dexec.args="localhost [port]"`
 
 
 Thats it, have fun..
