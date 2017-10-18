@@ -26,9 +26,9 @@ public class LoadItemsResponse extends ServerResponse {
 
     public static class Item implements TodoItem{
 
-        private boolean done;
         private String itemTitle;
         private String itemDescription;
+        private boolean done;
 
         public Item() {
         }
@@ -39,10 +39,10 @@ public class LoadItemsResponse extends ServerResponse {
             this.itemDescription=todoItem.getItemDescription();
         }
 
-        public Item(boolean done, String itemTitle, String itemDescription) {
-            this.done = done;
+        public Item(String itemTitle, String itemDescription, boolean done) {
             this.itemTitle = itemTitle;
             this.itemDescription = itemDescription;
+            this.done = done;
         }
 
         @Override

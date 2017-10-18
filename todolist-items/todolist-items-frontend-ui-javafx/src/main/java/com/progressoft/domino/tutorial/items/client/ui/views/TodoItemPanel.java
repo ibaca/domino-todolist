@@ -39,8 +39,8 @@ public class TodoItemPanel extends HBox implements TodoItem {
         initSelector(done);
         updateStyles(done);
 
-        titleContainer.getChildren().add(titleLabel);
         titleContainer.getChildren().add(selector);
+        titleContainer.getChildren().add(titleLabel);
         descriptionContainer.getChildren().add(descriptionLabel);
         container.getChildren().add(titleContainer);
         container.getChildren().add(descriptionContainer);

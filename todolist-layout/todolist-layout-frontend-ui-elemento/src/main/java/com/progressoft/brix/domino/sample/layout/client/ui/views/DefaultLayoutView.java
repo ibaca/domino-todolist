@@ -38,16 +38,6 @@ public class DefaultLayoutView implements LayoutView {
     }
 
     @Override
-    public void addClickHandler(ClickHandler handler) {
-
-    }
-
-    @Override
-    public void showAlert() {
-
-    }
-
-    @Override
     public void addMenuItem(LayoutMenuItem menuItem) {
         MenuItem item = MenuItem.create().init(menuItem.icon(), menuItem.text());
         item.asElement().addEventListener("tap", evt -> menuItem.selectHandler().onSelect());

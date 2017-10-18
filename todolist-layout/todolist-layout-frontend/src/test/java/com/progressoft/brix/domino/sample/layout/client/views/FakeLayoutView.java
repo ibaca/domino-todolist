@@ -41,16 +41,6 @@ public class FakeLayoutView implements LayoutView {
 
     }
 
-    @Override
-    public void addClickHandler(ClickHandler handler) {
-
-    }
-
-    @Override
-    public void showAlert() {
-
-    }
-
     public boolean isVisible() {
         return visible;
     }

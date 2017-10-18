@@ -22,7 +22,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultItemsPresenter.class);
 
-    private List<TodoItem> addedItems = new ArrayList<>();
+    protected List<TodoItem> addedItems = new ArrayList<>();
 
     @Override
     public void initView(ItemsView view) {
@@ -33,34 +33,54 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void addItem(String title, String description) {
-        view.addItem(title, description, false, item -> new AddItemServerRequest(item).send());
+        new AddItemServerRequest(title, description).send();
     }
 
     @Override
     public void contributeToLayoutModule(LayoutContext context) {
 
-        new LoadItemsServerRequest().send();
+        loadItems();
         context.setContent(view.getContent());
 
         context.addMenuItem(new MenuItem("delete", "Clear All", () -> {
             context.closeMenu();
             clearAll();
+            LOGGER.info("Todo Items - Clear All ");
         }));
         context.addMenuItem(new MenuItem("clear", "Clear Done", () -> {
             context.closeMenu();
             removeDoneItems();
+            LOGGER.info("Todo Items - Clear Done ");
         }));
 
-        context.addMenuItem(new MenuItem("settings", "Settings", () -> LOGGER.info("Settings")));
-        context.addMenuItem(new MenuItem("help", "Help", () -> LOGGER.info("help")));
+        context.addMenuItem(new MenuItem("refresh", "Refresh", () -> {
+            context.closeMenu();
+            refreshItems();
+            LOGGER.info("Todo Items - Refresh ");
+        }));
 
-        context.setAddHandler(() -> view.showAdd());
+        context.addMenuItem(new MenuItem("settings", "Settings", () -> LOGGER.info("Todo Items - Settings")));
+        context.addMenuItem(new MenuItem("help", "Help", () -> LOGGER.info("Todo Items - help")));
 
+        context.setShowAddNewItemDialogHandler(() -> view.showAdd());
+
+    }
+
+    private void loadItems() {
+        new LoadItemsServerRequest().send();
+    }
+
+    private void refreshItems() {
+        clearView();
+        loadItems();
     }
 
     @Override
     public void onItemAdded(TodoItem item) {
-        addedItems.add(item);
+
+        view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone(),
+                addedItem -> addedItems.add(addedItem));
+        LOGGER.info("Todo Items - Item added to view "+item.getItemTitle());
     }
 
     @Override
@@ -71,8 +91,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     @Override
     public void onItemsCleared(boolean cleared) {
         if (cleared) {
-            view.clearAll();
-            addedItems.clear();
+            clearView();
         } else
             LOGGER.error("Error while clearing all items");
     }
@@ -87,8 +106,17 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     public void onDoneCleared() {
         List<TodoItem> doneItems = addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList());
-        view.remove(doneItems);
-        addedItems.removeAll(doneItems);
+
+        clearView(doneItems);
+    }
+
+    private void clearView(List<TodoItem> items) {
+        items.forEach(view::remove);
+        addedItems.removeAll(items);
+    }
+
+    private void clearView() {
+        clearView(addedItems);
     }
 
     class MenuItem implements LayoutMenuItem {

@@ -9,6 +9,4 @@ public interface LayoutPresenter extends Presentable{
 
     @InjectContext(extensionPoint=MainExtensionPoint.class)
     void contributeToMainModule(MainContext context);
-
-    void onClicked();
 }

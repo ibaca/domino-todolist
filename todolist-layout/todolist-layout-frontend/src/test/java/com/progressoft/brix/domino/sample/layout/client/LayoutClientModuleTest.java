@@ -5,7 +5,6 @@ import com.progressoft.brix.domino.api.client.annotations.ClientModule;
 import com.progressoft.brix.domino.sample.layout.client.presenters.LayoutPresenter;
 import com.progressoft.brix.domino.sample.layout.client.presenters.LayoutPresenterSpy;
 import com.progressoft.brix.domino.sample.layout.client.views.FakeLayoutView;
-import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 import com.progressoft.brix.domino.test.api.client.ClientContext;
 import com.progressoft.brix.domino.test.api.client.DominoTestClient;
 import org.junit.Before;
@@ -24,6 +23,7 @@ public class LayoutClientModuleTest {
     private FakeLayoutView fakeView;
     private ClientContext clientContext;
     private FakeLayoutContribution fakeLayoutContribution;
+    private LayoutMenuItem testLayoutItem;
 
     @Before
     public void setUp() {
@@ -34,6 +34,23 @@ public class LayoutClientModuleTest {
                 .contributionOf(FakeLayoutContribution.class, contribution -> fakeLayoutContribution = contribution)
                 .onStartCompleted(clientContext -> this.clientContext = clientContext)
                 .start();
+
+        testLayoutItem = new LayoutMenuItem() {
+            @Override
+            public String icon() {
+                return "icon";
+            }
+
+            @Override
+            public String text() {
+                return "layout item text";
+            }
+
+            @Override
+            public SelectHandler selectHandler() {
+                return () -> {};
+            }
+        };
     }
 
     @Test
@@ -48,30 +65,15 @@ public class LayoutClientModuleTest {
     }
 
     @Test(expected = MenuItemConnotBeNullException.class)
-    public void givenLayoutContext_whenAddMenuItem_thenShouldThrowException() throws Exception {
+    public void givenLayoutContext_whenAddNullMenuItem_thenShouldThrowException() throws Exception {
         fakeLayoutContribution.context.addMenuItem(null);
     }
 
     @Test
-    public void givenLayoutContext_whenAddNullMenuItem_thenMenuItemShouldBeAddedToLayoutView() throws Exception {
-        final LayoutMenuItem layoutMenuItem = new LayoutMenuItem() {
-            @Override
-            public String icon() {
-                return null;
-            }
+    public void givenLayoutContext_whenAddMenuItem_thenMenuItemShouldBeAddedToLayoutView() throws Exception {
 
-            @Override
-            public String text() {
-                return null;
-            }
-
-            @Override
-            public SelectHandler selectHandler() {
-                return null;
-            }
-        };
-        fakeLayoutContribution.context.addMenuItem(layoutMenuItem);
-        assertThat(fakeView.layoutMenuItems).contains(layoutMenuItem);
+        fakeLayoutContribution.context.addMenuItem(testLayoutItem);
+        assertThat(fakeView.layoutMenuItems).contains(testLayoutItem);
     }
 
     @Test
@@ -89,13 +91,13 @@ public class LayoutClientModuleTest {
     @Test
     public void givenLayoutContext_whenSetAddHandler_thenShouldSetAddHandlerInLayoutView() throws Exception {
         CreateItemHandler createItemHandler= () -> {};
-        fakeLayoutContribution.context.setAddHandler(createItemHandler);
+        fakeLayoutContribution.context.setShowAddNewItemDialogHandler(createItemHandler);
         assertThat(fakeView.createHandler).isEqualTo(createItemHandler);
     }
 
     @Test(expected = HandlerConnotBeNullException.class)
     public void givenLayoutContext_whenSetNullCreateHandler_thenShouldThrowException() throws Exception {
-        fakeLayoutContribution.context.setAddHandler(null);
+        fakeLayoutContribution.context.setShowAddNewItemDialogHandler(null);
     }
 
 

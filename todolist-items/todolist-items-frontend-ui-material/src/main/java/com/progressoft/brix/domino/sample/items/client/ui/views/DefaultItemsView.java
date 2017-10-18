@@ -67,7 +67,7 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     public void addNewItemHandler(NewItemHandler newItemHandler) {
         newItemDialog.addButton.addClickHandler(
                 evt -> {
-                    if(newItemDialog.titleField.getValue().isEmpty())
+                    if (newItemDialog.titleField.getValue().isEmpty())
                         newItemDialog.titleField.setError("Title is required");
                     else {
                         newItemHandler
@@ -88,14 +88,8 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     }
 
     @Override
-    public void clearAll() {
-        itemsCollection.clear();
-    }
-
-    @Override
-    public void remove(List<TodoItem> doneItems) {
-        doneItems.stream().map(todoItem -> ((Item) Js.cast(todoItem)))
-                .forEach(w -> itemsCollection.remove(w));
+    public void remove(TodoItem item) {
+        itemsCollection.remove(Js.cast(item));
     }
 
     @Override

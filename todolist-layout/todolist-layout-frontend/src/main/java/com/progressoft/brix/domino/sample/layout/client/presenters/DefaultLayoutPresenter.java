@@ -28,11 +28,13 @@ public class DefaultLayoutPresenter extends BaseClientPresenter<LayoutView> impl
                 if (isNull(content))
                     throw new ContentConnotBeNullException();
                 view.setContent(content);
+                LOGGER.info("Layout - setting main content.");
             }
 
             @Override
             public void closeMenu() {
                 view.closeMenu();
+                LOGGER.info("Layout - menu closed");
             }
 
             @Override
@@ -40,19 +42,17 @@ public class DefaultLayoutPresenter extends BaseClientPresenter<LayoutView> impl
                 if (isNull(layoutMenuItem))
                     throw new MenuItemConnotBeNullException();
                 view.addMenuItem(layoutMenuItem);
+                LOGGER.info("Layout - adding menu item ["+layoutMenuItem.text()+"]");
             }
 
             @Override
-            public void setAddHandler(CreateItemHandler createItemHandler) {
+            public void setShowAddNewItemDialogHandler(CreateItemHandler createItemHandler) {
                 if (isNull(createItemHandler))
                     throw new HandlerConnotBeNullException();
                 view.setCreateHandler(createItemHandler);
+                LOGGER.info("Layout - setting add item handler.");
             }
         }));
     }
 
-    @Override
-    public void onClicked() {
-        view.showAlert();
-    }
 }
