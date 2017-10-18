@@ -111,6 +111,14 @@
                 <version>1.6.0</version>
                 <configuration>
                     <mainClass>com.progressoft.domino.tutorial.DesktopClientModule</mainClass>
+                    <arguments>
+                        <argument>
+                            localhost
+                        </argument>
+                        <argument>
+                            39958
+                        </argument>
+                    </arguments>
                 </configuration>
             </plugin>
             <plugin>

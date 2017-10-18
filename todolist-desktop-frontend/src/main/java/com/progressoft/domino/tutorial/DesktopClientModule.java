@@ -12,6 +12,9 @@ public class DesktopClientModule {
     public static void main(String[] args) {
         CoreModule.init();
         ModuleConfigurationsLoader.load();
-        ClientApp.make().run();
+        ClientApp.make().run(dominoOptions -> {
+            if(args.length>1)
+                dominoOptions.setDefaultServiceRoot("http://"+args[0]+":"+args[1]+"/service");
+        });
     }
 }

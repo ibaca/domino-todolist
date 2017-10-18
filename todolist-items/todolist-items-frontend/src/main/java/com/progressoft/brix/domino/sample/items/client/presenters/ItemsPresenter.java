@@ -21,4 +21,6 @@ public interface ItemsPresenter extends Presentable{
     void onItemsLoaded(List<Item> items);
 
     void onItemsCleared(boolean cleared);
+
+    void onDoneCleared();
 }

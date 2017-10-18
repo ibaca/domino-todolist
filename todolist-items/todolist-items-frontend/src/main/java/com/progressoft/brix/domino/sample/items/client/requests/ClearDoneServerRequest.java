@@ -15,7 +15,7 @@ public class ClearDoneServerRequest extends ClientServerRequest<ItemsPresenter, 
 
     @Override
     protected void process(ItemsPresenter presenter, RemoveRequest serverArgs, RemoveResponse response) {
-        presenter.onItemsCleared(response.isCleared());
+        presenter.onDoneCleared();
     }
 
     @Override

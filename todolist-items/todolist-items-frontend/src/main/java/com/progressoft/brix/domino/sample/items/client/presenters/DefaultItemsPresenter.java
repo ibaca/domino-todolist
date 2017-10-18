@@ -2,10 +2,7 @@ package com.progressoft.brix.domino.sample.items.client.presenters;
 
 import com.progressoft.brix.domino.api.client.annotations.Presenter;
 import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
-import com.progressoft.brix.domino.sample.items.client.requests.AddItemServerRequest;
-import com.progressoft.brix.domino.sample.items.client.requests.ClearAllServerRequest;
-import com.progressoft.brix.domino.sample.items.client.requests.LoadItemsServerRequest;
-import com.progressoft.brix.domino.sample.items.client.requests.ToggleItemServerRequest;
+import com.progressoft.brix.domino.sample.items.client.requests.*;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
@@ -85,6 +82,10 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void removeDoneItems() {
+        new ClearDoneServerRequest().send();
+    }
+
+    public void onDoneCleared() {
         List<TodoItem> doneItems = addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList());
         view.remove(doneItems);
         addedItems.removeAll(doneItems);
