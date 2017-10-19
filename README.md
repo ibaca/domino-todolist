@@ -7,7 +7,7 @@ Todo-list using Domino implementing UI with three different ways:
 
 ## How to build :
 
-1. clone the respository
+1. clone the repository
 
 2. run `mvn clean install` to compile with UiBinders and Material design or run `mvn clean install -Dui=polymer` to compile with elemento and polymer web components
 

@@ -13,8 +13,13 @@ public class DesktopClientModule {
         CoreModule.init();
         ModuleConfigurationsLoader.load();
         ClientApp.make().run(dominoOptions -> {
-            if(args.length>1)
-                dominoOptions.setDefaultServiceRoot("http://"+args[0]+":"+args[1]+"/service");
+            if(args.length>1) {
+                String defaultServiceRoot = "http://" + args[0] + ":" + args[1] + "/service";
+                dominoOptions.setDefaultServiceRoot(defaultServiceRoot);
+                LOGGER.info("Application is now connected to : "+defaultServiceRoot);
+            }else {
+                LOGGER.info("Application is now connected to : http://localhost:8080");
+            }
         });
     }
 }
