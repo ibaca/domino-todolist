@@ -29,6 +29,18 @@
         <domino.version>1.0-rc.2-SNAPSHOT</domino.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -83,11 +95,9 @@
         </pluginManagement>
     </build>
 
-
     <modules>
         <module>todolist-layout-frontend</module>
         <module>todolist-layout-shared</module>
-        <module>todolist-layout-backend</module>
         <module>todolist-layout-frontend-ui-material</module>
         <module>todolist-layout-frontend-ui-elemento</module>
         <module>todolist-layout-frontend-ui-javafx</module>

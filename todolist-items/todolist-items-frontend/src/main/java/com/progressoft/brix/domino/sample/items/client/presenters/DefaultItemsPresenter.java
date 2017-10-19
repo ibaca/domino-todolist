@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse.Item;
-import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutMenuItem;
 
 
 @Presenter
@@ -32,38 +31,53 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
         });
     }
 
-    private void addItem(String title, String description) {
-        new AddItemServerRequest(title, description).send();
-    }
-
     @Override
     public void contributeToLayoutModule(LayoutContext context) {
 
         loadItems();
         context.setContent(view.getContent());
 
+        initDeleteAllMenuItem(context);
+        initClearDoneMenuItem(context);
+        initRefreshMenuItem(context);
+
+        initFakeMenuItems(context);
+
+        context.setShowAddNewItemDialogHandler(() -> view.showAdd());
+
+    }
+
+    private void initDeleteAllMenuItem(LayoutContext context) {
         context.addMenuItem(new MenuItem("delete", "Clear All", () -> {
             context.closeMenu();
             clearAll();
             LOGGER.info("Todo Items - Clear All ");
         }));
+    }
+
+    private void initClearDoneMenuItem(LayoutContext context) {
         context.addMenuItem(new MenuItem("clear", "Clear Done", () -> {
             context.closeMenu();
             removeDoneItems();
             LOGGER.info("Todo Items - Clear Done ");
         }));
+    }
 
+    private void initRefreshMenuItem(LayoutContext context) {
         context.addMenuItem(new MenuItem("refresh", "Refresh", () -> {
             context.closeMenu();
             refreshItems();
             LOGGER.info("Todo Items - Refresh ");
         }));
+    }
 
+    private void initFakeMenuItems(LayoutContext context) {
         context.addMenuItem(new MenuItem("settings", "Settings", () -> LOGGER.info("Todo Items - Settings")));
         context.addMenuItem(new MenuItem("help", "Help", () -> LOGGER.info("Todo Items - help")));
+    }
 
-        context.setShowAddNewItemDialogHandler(() -> view.showAdd());
-
+    private void addItem(String title, String description) {
+        new AddItemServerRequest(title, description).send();
     }
 
     private void loadItems() {
@@ -119,31 +133,4 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
         clearView(addedItems);
     }
 
-    class MenuItem implements LayoutMenuItem {
-
-        private final String icon;
-        private final String text;
-        private final SelectHandler selectHandler;
-
-        MenuItem(String icon, String text, SelectHandler selectHandler) {
-            this.icon = icon;
-            this.text = text;
-            this.selectHandler = selectHandler;
-        }
-
-        @Override
-        public String icon() {
-            return icon;
-        }
-
-        @Override
-        public String text() {
-            return text;
-        }
-
-        @Override
-        public SelectHandler selectHandler() {
-            return selectHandler;
-        }
-    }
 }
