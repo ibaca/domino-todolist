@@ -193,7 +193,6 @@
             </build>
         </profile>
         <profile>
-            <!-- XXX: We want to exclude stock-client from 'env-dev' profile, Maven forces us to make a 'env-prod' profile -->
             <id>mode-develop</id>
             <activation>
                 <activeByDefault>true</activeByDefault>

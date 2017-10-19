@@ -12,5 +12,6 @@ public class AppClientModule implements EntryPoint {
     public void onModuleLoad() {
         LOGGER.info("todolist Application frontend have been initialized.");
         ClientApp.make().run();
+
     }
 }
