@@ -3,34 +3,36 @@ package com.progressoft.brix.domino.sample.layout.client.ui.views;
 import com.progressoft.brix.domino.api.client.annotations.UiView;
 import com.progressoft.brix.domino.sample.layout.client.presenters.LayoutPresenter;
 import com.progressoft.brix.domino.sample.layout.client.views.LayoutView;
-import com.vaadin.polymer.paper.PaperIconButtonElement;
-import com.vaadin.polymer.paper.PaperItemElement;
-import com.vaadin.polymer.paper.PaperMenuButtonElement;
 import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 
-import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.*;
+import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutContent;
+import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutMenuItem;
 
 
 @UiView(presentable = LayoutPresenter.class)
-public class DefaultLayoutView implements LayoutView {
+public class ElementoLayoutView implements LayoutView {
 
     private Layout layout;
+    private LayoutUiHandlers uiHandlers;
 
-    public DefaultLayoutView() {
+    public ElementoLayoutView() {
         layout = Layout.create();
     }
 
     @Override
-    public void show(ShowingHandler showingHandler) {
-        DomGlobal.document.body.appendChild(layout.asElement());
-        showingHandler.onShow();
+    public void setUiHandlers(LayoutUiHandlers uiHandlers) {
+        this.uiHandlers=uiHandlers;
+        layout.addButton.addEventListener("tap", event -> this.uiHandlers.onCreate());
     }
 
     @Override
-    public void setCreateHandler(CreateItemHandler createItemHandler) {
-        layout.addButton.addEventListener("tap", event -> createItemHandler.onCreate());
+    public void show() {
+        DomGlobal.document.body.appendChild(layout.asElement());
+        uiHandlers.onShow();
     }
+
+
 
     @Override
     public void closeMenu() {

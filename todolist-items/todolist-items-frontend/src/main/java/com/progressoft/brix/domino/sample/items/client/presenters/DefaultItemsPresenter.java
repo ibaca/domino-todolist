@@ -17,18 +17,31 @@ import static com.progressoft.brix.domino.sample.items.shared.response.LoadItems
 
 
 @Presenter
-public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implements ItemsPresenter {
+public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implements ItemsPresenter,
+        ItemsView.ItemsUiHandlers {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultItemsPresenter.class);
 
     protected List<TodoItem> addedItems = new ArrayList<>();
 
     @Override
+    public void onNewItem(String title, String description) {
+        new AddItemServerRequest(title, description).send();
+    }
+
+    @Override
+    public void onSuccessCreation(TodoItem item) {
+        addedItems.add(item);
+    }
+
+    @Override
+    public void onItemStateChanged(TodoItem item) {
+        new ToggleItemServerRequest(item.getItemTitle()).send();
+    }
+
+    @Override
     public void initView(ItemsView view) {
-        view.addNewItemHandler(this::addItem);
-        view.onItemStateChanged(todoItem -> {
-            new ToggleItemServerRequest(todoItem.getItemTitle()).send();
-        });
+        view.setUiHandlers(this);
     }
 
     @Override
@@ -43,7 +56,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
         initFakeMenuItems(context);
 
-        context.setShowAddNewItemDialogHandler(() -> view.showAdd());
+        context.setOnCreatHandler(() -> view.showAddDialog());
 
     }
 
@@ -76,10 +89,6 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
         context.addMenuItem(new MenuItem("help", "Help", () -> LOGGER.info("Todo Items - help")));
     }
 
-    private void addItem(String title, String description) {
-        new AddItemServerRequest(title, description).send();
-    }
-
     private void loadItems() {
         new LoadItemsServerRequest().send();
     }
@@ -91,15 +100,13 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onItemAdded(TodoItem item) {
-
-        view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone(),
-                addedItem -> addedItems.add(addedItem));
+        view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone());
         LOGGER.info("Todo Items - Item added to view "+item.getItemTitle());
     }
 
     @Override
     public void onItemsLoaded(List<Item> items) {
-        items.forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone(), addedItem -> addedItems.add(addedItem)));
+        items.forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone()));
     }
 
     @Override

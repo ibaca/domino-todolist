@@ -8,7 +8,7 @@ import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutExtensio
 
 import java.util.List;
 
-import static com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse.*;
+import static com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse.Item;
 
 
 public interface ItemsPresenter extends Presentable{

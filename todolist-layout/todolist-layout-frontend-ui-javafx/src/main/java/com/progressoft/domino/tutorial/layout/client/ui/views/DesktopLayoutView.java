@@ -10,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -27,12 +26,15 @@ public class DesktopLayoutView extends Application implements LayoutView {
     private HBox hbox;
     private static VBox menu;
     private static VBox center;
-    private static ShowingHandler showingHandler;
-    private static LayoutContext.CreateItemHandler createItemHandler;
+    private static LayoutUiHandlers uiHandlers;
 
     @Override
-    public void show(ShowingHandler showingHandler) {
-        DesktopLayoutView.showingHandler = showingHandler;
+    public void setUiHandlers(LayoutUiHandlers uiHandlers) {
+        this.uiHandlers =uiHandlers;
+    }
+
+    @Override
+    public void show() {
         Thread thread = new Thread(Application::launch);
         thread.start();
     }
@@ -54,10 +56,6 @@ public class DesktopLayoutView extends Application implements LayoutView {
         center.getChildren().add((Node) content.get());
     }
 
-    @Override
-    public void setCreateHandler(LayoutContext.CreateItemHandler createItemHandler) {
-        DesktopLayoutView.createItemHandler = createItemHandler;
-    }
 
     @Override
     public void closeMenu() {
@@ -66,7 +64,7 @@ public class DesktopLayoutView extends Application implements LayoutView {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setOnShowing(event -> showingHandler.onShow());
+        primaryStage.setOnShowing(event -> uiHandlers.onShow());
         BorderPane border = new BorderPane();
         hbox = new HBox();
         border.setTop(hbox);
@@ -100,9 +98,7 @@ public class DesktopLayoutView extends Application implements LayoutView {
         add.setCursor(Cursor.HAND);
         add.setBackground(Background.EMPTY);
         add.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
-        add.setOnAction(event -> {
-            createItemHandler.onCreate();
-        });
+        add.setOnAction(event -> uiHandlers.onCreate());
 
         border.setCenter(center);
 

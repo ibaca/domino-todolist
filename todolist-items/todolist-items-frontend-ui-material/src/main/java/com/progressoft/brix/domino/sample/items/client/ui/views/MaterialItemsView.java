@@ -14,14 +14,11 @@ import gwt.material.design.client.ui.MaterialContainer;
 import gwt.material.design.client.ui.MaterialPanel;
 import jsinterop.base.Js;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutContent;
 
 
 @UiView(presentable = ItemsPresenter.class)
-public class DefaultItemsView extends Composite implements ItemsView, LayoutContent<MaterialContainer> {
+public class MaterialItemsView extends Composite implements ItemsView, LayoutContent<MaterialContainer> {
 
     private final MaterialPanel root;
 
@@ -30,14 +27,14 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
 
     @UiField
     MaterialCollection itemsCollection;
-    private Consumer<TodoItem> changeHandler;
+    private ItemsUiHandlers uiHandlers;
 
     @Override
     public MaterialContainer get() {
         return listContainer;
     }
 
-    interface DefaultItemsViewUiBinder extends UiBinder<MaterialPanel, DefaultItemsView> {
+    interface DefaultItemsViewUiBinder extends UiBinder<MaterialPanel, MaterialItemsView> {
     }
 
     private static DefaultItemsViewUiBinder uiBinder = GWT.create(DefaultItemsViewUiBinder.class);
@@ -46,7 +43,7 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     NewItemDialog newItemDialog;
 
 
-    public DefaultItemsView() {
+    public MaterialItemsView() {
         root = uiBinder.createAndBindUi(this);
         initWidget(root);
         newItemDialog = new NewItemDialog();
@@ -54,23 +51,14 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     }
 
     @Override
-    public void showAdd() {
-        newItemDialog.modal.open();
-    }
-
-    @Override
-    public LayoutContent getContent() {
-        return this;
-    }
-
-    @Override
-    public void addNewItemHandler(NewItemHandler newItemHandler) {
+    public void setUiHandlers(ItemsUiHandlers uiHandlers) {
+        this.uiHandlers=uiHandlers;
         newItemDialog.addButton.addClickHandler(
                 evt -> {
                     if (newItemDialog.titleField.getValue().isEmpty())
                         newItemDialog.titleField.setError("Title is required");
                     else {
-                        newItemHandler
+                        this.uiHandlers
                                 .onNewItem(newItemDialog.titleField.getValue(),
                                         newItemDialog.descriptionField.getValue());
                         newItemDialog.titleField.setValue("");
@@ -81,10 +69,22 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
     }
 
     @Override
-    public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
-        Item item = Item.create(changeHandler).init(title, description, done);
+    public void showAddDialog() {
+        newItemDialog.modal.open();
+    }
+
+    @Override
+    public LayoutContent getContent() {
+        return this;
+    }
+
+
+
+    @Override
+    public void addItem(String title, String description, boolean done) {
+        Item item = Item.create(this.uiHandlers).init(title, description, done);
         itemsCollection.add(item);
-        successAddHandler.onSuccess(item);
+        this.uiHandlers.onSuccessCreation(item);
     }
 
     @Override
@@ -92,8 +92,5 @@ public class DefaultItemsView extends Composite implements ItemsView, LayoutCont
         itemsCollection.remove(Js.cast(item));
     }
 
-    @Override
-    public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
-        this.changeHandler = changeHandler;
-    }
+
 }

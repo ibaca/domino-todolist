@@ -6,23 +6,24 @@ import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 @UiView(presentable = ItemsPresenter.class)
 public class FakeItemsView implements ItemsView {
 
-    //    public static class
-    private NewItemHandler addNewItemHandler;
-    private Consumer<TodoItem> onStateChangeHandler;
     private Map<String, TodoItem> items = new HashMap<>();
 
     private LayoutContext.LayoutContent layoutContent= () -> null;
     private boolean addDialogOpen;
+    private ItemsUiHandlers uiHandlers;
 
     @Override
-    public void showAdd() {
+    public void setUiHandlers(ItemsUiHandlers uiHandlers) {
+        this.uiHandlers=uiHandlers;
+    }
+
+    @Override
+    public void showAddDialog() {
         this.addDialogOpen=true;
     }
 
@@ -31,16 +32,12 @@ public class FakeItemsView implements ItemsView {
         return layoutContent;
     }
 
-    @Override
-    public void addNewItemHandler(NewItemHandler newItemHandler) {
-        this.addNewItemHandler = newItemHandler;
-    }
 
     @Override
-    public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
+    public void addItem(String title, String description, boolean done) {
         FakeTodoItem todoItem = new FakeTodoItem(title, description, done);
         items.put(title, todoItem);
-        successAddHandler.onSuccess(todoItem);
+        uiHandlers.onSuccessCreation(todoItem);
     }
 
     @Override
@@ -48,25 +45,12 @@ public class FakeItemsView implements ItemsView {
         items.remove(item.getItemTitle());
     }
 
-    @Override
-    public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
-        this.onStateChangeHandler = changeHandler;
-    }
-
-    public NewItemHandler getAddNewItemHandler() {
-        return addNewItemHandler;
-    }
-
-    public Consumer<TodoItem> getOnStateChangeHandler() {
-        return onStateChangeHandler;
-    }
-
     public void toggle(String title) {
-        onStateChangeHandler.accept(getItem(title));
+        uiHandlers.onItemStateChanged(getItem(title));
     }
 
     public void addNewItem(String title, String description) {
-        addNewItemHandler.onNewItem(title, description);
+        uiHandlers.onNewItem(title, description);
     }
 
     public TodoItem getItem(String title) {
@@ -79,6 +63,10 @@ public class FakeItemsView implements ItemsView {
 
     public Map<String, TodoItem> getItems() {
         return items;
+    }
+
+    public ItemsUiHandlers getUiHandlers() {
+        return uiHandlers;
     }
 
     private class FakeTodoItem implements TodoItem {

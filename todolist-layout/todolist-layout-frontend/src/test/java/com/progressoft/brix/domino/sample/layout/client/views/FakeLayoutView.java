@@ -14,6 +14,12 @@ public class FakeLayoutView implements LayoutView {
     public List<LayoutContext.LayoutMenuItem> layoutMenuItems = new ArrayList<>();
     public LayoutContext.LayoutContent content;
     public LayoutContext.CreateItemHandler createHandler;
+    private LayoutUiHandlers uiHandlers;
+
+    @Override
+    public void setUiHandlers(LayoutUiHandlers uiHandlers) {
+        this.uiHandlers =uiHandlers;
+    }
 
     @Override
     public void addMenuItem(LayoutContext.LayoutMenuItem layoutMenuItem) {
@@ -21,19 +27,14 @@ public class FakeLayoutView implements LayoutView {
     }
 
     @Override
-    public void show(ShowingHandler showingHandler) {
+    public void show() {
         this.visible = true;
-        showingHandler.onShow();
+        uiHandlers.onShow();
     }
 
     @Override
     public void setContent(LayoutContext.LayoutContent content) {
         this.content = content;
-    }
-
-    @Override
-    public void setCreateHandler(LayoutContext.CreateItemHandler createItemHandler) {
-        this.createHandler = createItemHandler;
     }
 
     @Override
@@ -43,5 +44,9 @@ public class FakeLayoutView implements LayoutView {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void onCreate() {
+        uiHandlers.onCreate();
     }
 }

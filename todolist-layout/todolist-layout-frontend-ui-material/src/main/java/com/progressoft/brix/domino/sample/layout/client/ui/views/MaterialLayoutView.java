@@ -8,21 +8,25 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.progressoft.brix.domino.api.client.annotations.UiView;
 import com.progressoft.brix.domino.sample.layout.client.presenters.LayoutPresenter;
 import com.progressoft.brix.domino.sample.layout.client.views.LayoutView;
-import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 import gwt.material.design.client.constants.IconType;
 import gwt.material.design.client.ui.*;
 import jsinterop.base.Js;
 
-import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.*;
+import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutContent;
+import static com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext.LayoutMenuItem;
 
 
 @UiView(presentable = LayoutPresenter.class)
-public class DefaultLayoutView extends Composite implements LayoutView {
+public class MaterialLayoutView extends Composite implements LayoutView {
 
-    interface DefaultLayoutViewUiBinder extends UiBinder<MaterialPanel, DefaultLayoutView> {
+    interface MaterialLayoutViewUiBinder extends UiBinder<MaterialPanel, MaterialLayoutView> {
+
     }
 
-    private static DefaultLayoutViewUiBinder uiBinder = GWT.create(DefaultLayoutViewUiBinder.class);
+    private static MaterialLayoutViewUiBinder uiBinder = GWT.create(MaterialLayoutViewUiBinder.class);
+
+
+    LayoutUiHandlers uiHandlers;
 
     @UiField
     MaterialSideNavPush sideNav;
@@ -33,19 +37,21 @@ public class DefaultLayoutView extends Composite implements LayoutView {
     @UiField
     MaterialButton newItemButton;
 
-    public DefaultLayoutView() {
+    public MaterialLayoutView() {
         initWidget(uiBinder.createAndBindUi(this));
+
     }
 
     @Override
-    public void show(ShowingHandler showingHandler) {
+    public void setUiHandlers(LayoutUiHandlers uiHandlers) {
+        this.uiHandlers=uiHandlers;
+        newItemButton.addClickHandler(event -> uiHandlers.onCreate());
+    }
+
+    @Override
+    public void show() {
         RootPanel.get().add(this);
-        showingHandler.onShow();
-    }
-
-    @Override
-    public void setCreateHandler(CreateItemHandler createItemHandler) {
-        newItemButton.addClickHandler(event -> createItemHandler.onCreate());
+        uiHandlers.onShow();
     }
 
     @Override
@@ -53,6 +59,7 @@ public class DefaultLayoutView extends Composite implements LayoutView {
         if (sideNav.isOpen())
             sideNav.hide();
     }
+
 
     @Override
     public void addMenuItem(LayoutMenuItem menuItem) {
@@ -68,4 +75,9 @@ public class DefaultLayoutView extends Composite implements LayoutView {
         mainContent.clear();
         mainContent.add(Js.cast(content.get()));
     }
+
+    public LayoutUiHandlers getUiHandlers() {
+        return uiHandlers;
+    }
+
 }

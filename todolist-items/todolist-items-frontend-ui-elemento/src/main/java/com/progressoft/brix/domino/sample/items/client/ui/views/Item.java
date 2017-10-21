@@ -1,5 +1,6 @@
 package com.progressoft.brix.domino.sample.items.client.ui.views;
 
+import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.vaadin.polymer.paper.PaperCheckboxElement;
 import elemental2.dom.HTMLDivElement;
@@ -7,8 +8,6 @@ import elemental2.dom.HTMLElement;
 import org.jboss.gwt.elemento.core.IsElement;
 import org.jboss.gwt.elemento.template.DataElement;
 import org.jboss.gwt.elemento.template.Templated;
-
-import java.util.function.Consumer;
 
 
 @Templated
@@ -23,10 +22,10 @@ public abstract class Item implements IsElement<HTMLElement>, TodoItem {
     @DataElement
     PaperCheckboxElement selector;
 
-    abstract Consumer<TodoItem> changeHandler();
+    abstract ItemsView.ItemsUiHandlers uiHandlers();
 
-    public static Item create(Consumer<TodoItem> changeHandler) {
-        return new Templated_Item(changeHandler);
+    public static Item create(ItemsView.ItemsUiHandlers uiHandlers) {
+        return new Templated_Item(uiHandlers);
     }
 
     public Item init(String title, String description, boolean done) {
@@ -35,7 +34,7 @@ public abstract class Item implements IsElement<HTMLElement>, TodoItem {
         this.selector.setChecked(done);
         this.selector.addEventListener("tap", evt -> {
             updateStyles(this.selector.getChecked());
-            changeHandler().accept(this);
+            uiHandlers().onItemStateChanged(this);
         });
         updateStyles(done);
         return this;

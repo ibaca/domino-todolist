@@ -2,7 +2,6 @@ package com.progressoft.brix.domino.sample.layout.client.ui.views;
 
 import com.vaadin.polymer.app.AppDrawerElement;
 import com.vaadin.polymer.paper.PaperFabElement;
-import com.vaadin.polymer.paper.PaperIconButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.gwt.elemento.core.IsElement;

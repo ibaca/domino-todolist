@@ -1,5 +1,6 @@
 package com.progressoft.domino.tutorial.items.client.ui.views;
 
+import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
@@ -9,13 +10,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.function.Consumer;
-
 public class TodoItemPanel extends HBox implements TodoItem {
 
+    private final ItemsView.ItemsUiHandlers uiHandlers;
     private String itemTitle;
     private String itemDescription;
-    private final Consumer<TodoItem> changeHandler;
     private VBox container;
     private HBox titleContainer;
     private CheckBox selector;
@@ -23,10 +22,10 @@ public class TodoItemPanel extends HBox implements TodoItem {
     private Text titleLabel;
     private Text descriptionLabel;
 
-    public TodoItemPanel(String itemTitle, String itemDescription, boolean done, Consumer<TodoItem> changeHandler) {
+    public TodoItemPanel(String itemTitle, String itemDescription, boolean done, ItemsView.ItemsUiHandlers uiHandlers) {
         this.itemTitle = itemTitle;
         this.itemDescription = itemDescription;
-        this.changeHandler = changeHandler;
+        this.uiHandlers = uiHandlers;
         container = new VBox();
         container.setSpacing(5);
 
@@ -53,7 +52,7 @@ public class TodoItemPanel extends HBox implements TodoItem {
         selector.setSelected(done);
         selector.setOnAction(event -> {
             updateStyles(selector.isSelected());
-            changeHandler.accept(this);
+            uiHandlers.onItemStateChanged(this);
         });
     }
 

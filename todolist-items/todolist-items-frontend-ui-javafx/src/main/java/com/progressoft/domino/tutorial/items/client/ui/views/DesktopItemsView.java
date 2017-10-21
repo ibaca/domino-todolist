@@ -15,18 +15,21 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @UiView(presentable = ItemsPresenter.class)
 public class DesktopItemsView implements ItemsView {
 
 
     private final VBox vBox = new VBox();
-    private NewItemHandler newItemHandler;
-    private Consumer<TodoItem> changeHandler;
+    private ItemsUiHandlers uiHandlers;
 
     @Override
-    public void showAdd() {
+    public void setUiHandlers(ItemsUiHandlers uiHandlers) {
+        this.uiHandlers=uiHandlers;
+    }
+
+    @Override
+    public void showAddDialog() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Add item");
 
@@ -62,17 +65,13 @@ public class DesktopItemsView implements ItemsView {
         Platform.runLater(title::requestFocus);
 
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
-                return new Pair<>(title.getText(), description.getText());
-            }
+            if (dialogButton == loginButtonType) return new Pair<>(title.getText(), description.getText());
             return null;
         });
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
-        result.ifPresent(titleDesc -> {
-            newItemHandler.onNewItem(titleDesc.getKey(), titleDesc.getValue());
-        });
+        result.ifPresent(titleDesc -> uiHandlers.onNewItem(titleDesc.getKey(), titleDesc.getValue()));
     }
 
     @Override
@@ -82,32 +81,23 @@ public class DesktopItemsView implements ItemsView {
         return () -> vBox;
     }
 
-    @Override
-    public void addNewItemHandler(NewItemHandler newItemHandler) {
-        this.newItemHandler = newItemHandler;
-    }
 
     @Override
-    public void addItem(String title, String description, boolean done, SuccessAddHandler successAddHandler) {
+    public void addItem(String title, String description, boolean done) {
         Platform.runLater(() -> {
-            TodoItemPanel todoItem = new TodoItemPanel(title, description, done, changeHandler);
+            TodoItemPanel todoItem = new TodoItemPanel(title, description, done, uiHandlers);
             todoItem.setMinHeight(50);
             todoItem.setMinWidth(vBox.getMinWidth() - 100);
             todoItem.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
             todoItem.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(3), BorderStroke.DEFAULT_WIDTHS)));
             vBox.getChildren().add(todoItem);
-            successAddHandler.onSuccess(todoItem);
+            uiHandlers.onSuccessCreation(todoItem);
         });
     }
 
     @Override
     public void remove(TodoItem item) {
         Platform.runLater(() -> vBox.getChildren().remove(item));
-    }
-
-    @Override
-    public void onItemStateChanged(Consumer<TodoItem> changeHandler) {
-        this.changeHandler = changeHandler;
     }
 
 }

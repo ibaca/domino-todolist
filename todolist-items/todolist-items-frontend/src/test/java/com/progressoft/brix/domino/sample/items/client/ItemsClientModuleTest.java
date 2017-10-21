@@ -59,7 +59,7 @@ public class ItemsClientModuleTest {
         }
 
         @Override
-        public void setShowAddNewItemDialogHandler(CreateItemHandler createItemHandler) {
+        public void setOnCreatHandler(CreateItemHandler createItemHandler) {
             this.createItemHandler = createItemHandler;
         }
 
@@ -117,13 +117,8 @@ public class ItemsClientModuleTest {
     }
 
     @Test
-    public void givenModuleLoaded_whenViewIsInitialized_thenShouldRegisterTheAddNewItemHandler() throws Exception {
-        assertThat(fakeView.getAddNewItemHandler()).isNotNull();
-    }
-
-    @Test
-    public void givenModuleLoaded_whenViewIsInitialized_thenShouldRegisterItemStateChangeHandler() throws Exception {
-        assertThat(fakeView.getOnStateChangeHandler()).isNotNull();
+    public void givenModuleLoaded_whenViewIsInitialized_thenShouldRegisterUiHandlers() throws Exception {
+        assertThat(fakeView.getUiHandlers()).isNotNull();
     }
 
     @Test

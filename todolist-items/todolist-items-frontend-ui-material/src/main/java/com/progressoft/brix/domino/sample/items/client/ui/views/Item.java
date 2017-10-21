@@ -6,19 +6,18 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import gwt.material.design.client.ui.MaterialCheckBox;
 import gwt.material.design.client.ui.MaterialCollectionItem;
 import gwt.material.design.client.ui.MaterialLabel;
-
-import java.util.function.Consumer;
 
 import static com.progressoft.brix.domino.sample.items.client.ui.views.Bundle.INSTANCE;
 
 
 public class Item extends Composite implements TodoItem {
 
-    private final Consumer<TodoItem> changeHandler;
+    private final ItemsView.ItemsUiHandlers uiHandlers;
     @UiField
     MaterialLabel titleField;
 
@@ -50,15 +49,15 @@ public class Item extends Composite implements TodoItem {
 
     private static ItemUiBinder uiBinder = GWT.create(ItemUiBinder.class);
 
-    public Item(Consumer<TodoItem> changeHandler) {
-        this.changeHandler = changeHandler;
+    public Item(ItemsView.ItemsUiHandlers uiHandlers) {
+        this.uiHandlers = uiHandlers;
         root = uiBinder.createAndBindUi(this);
         initWidget(root);
 
     }
 
-    public static Item create(Consumer<TodoItem> changeHandler) {
-        return new Item(changeHandler);
+    public static Item create(ItemsView.ItemsUiHandlers uiHandlers) {
+        return new Item(uiHandlers);
     }
 
     public Item init(String title, String description, boolean done) {
@@ -72,7 +71,7 @@ public class Item extends Composite implements TodoItem {
     @UiHandler("selector")
     void onClick(ClickEvent event) {
         updateStyles(selector.getValue());
-        changeHandler.accept(this);
+        uiHandlers.onItemStateChanged(this);
     }
 
     private void updateStyles(Boolean done) {

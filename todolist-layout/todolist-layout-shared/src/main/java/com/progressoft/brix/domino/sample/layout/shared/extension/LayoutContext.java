@@ -10,7 +10,7 @@ public interface LayoutContext extends Context {
     void closeMenu();
 
 
-    void setShowAddNewItemDialogHandler(CreateItemHandler createItemHandler);
+    void setOnCreatHandler(CreateItemHandler createItemHandler);
 
     interface LayoutMenuItem {
         String icon();
