@@ -1,5 +1,5 @@
 # domino-todolist
-Todo-list using Domino implementing UI with three different ways:
+Todo-list using [Domino](https://github.com/GwtDomino/domino) implementing UI with three different ways:
 
 - elemento + Polymer components
 - UIBinder + GWTMaterialDesign
