@@ -24,4 +24,5 @@
             <when-property-is name="gwt.logging.simpleRemoteHandler" value="ENABLED"/>
         </any>
     </replace-with>
+    <collapse-all-properties/>
 </module>

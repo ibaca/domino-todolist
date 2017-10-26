@@ -40,6 +40,11 @@
             <version>1.7.7.1</version>
         </dependency>
         <dependency>
+            <groupId>com.progressoft.brix.domino.logger</groupId>
+            <artifactId>domino-gwt-logger</artifactId>
+            <version>${domino.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.progressoft.brix.domino.apt</groupId>
             <artifactId>apt-client</artifactId>
             <version>${domino.version}</version>

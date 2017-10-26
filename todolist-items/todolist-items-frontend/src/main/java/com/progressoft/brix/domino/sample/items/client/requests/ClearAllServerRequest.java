@@ -11,15 +11,5 @@ import javax.ws.rs.HttpMethod;
 
 @Request(classifier = RemoveRequest.CLEAR)
 @Path(value = RemoveRequest.CLEAR, method = HttpMethod.GET)
-public class ClearAllServerRequest extends ClientServerRequest<ItemsPresenter, RemoveRequest, RemoveResponse> {
-
-    @Override
-    protected void process(ItemsPresenter presenter, RemoveRequest serverArgs, RemoveResponse response) {
-        presenter.onItemsCleared(response.isCleared());
-    }
-
-    @Override
-    public RemoveRequest buildArguments() {
-        return new RemoveRequest();
-    }
+public class ClearAllServerRequest extends ClientServerRequest<RemoveRequest, RemoveResponse> {
 }

@@ -1,6 +1,7 @@
 package com.progressoft.brix.domino.sample.layout.client.presenters;
 
 import com.progressoft.brix.domino.api.client.annotations.Presenter;
+import com.progressoft.brix.domino.api.client.annotations.Request;
 import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
 import com.progressoft.brix.domino.api.shared.extension.MainContext;
 import com.progressoft.brix.domino.sample.layout.client.views.LayoutView;
@@ -16,6 +17,14 @@ public class DefaultLayoutPresenter extends BaseClientPresenter<LayoutView> impl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLayoutPresenter.class);
     private CreateItemHandler createItemHandler;
+
+//    @Request
+//    public interface SampleRequest{
+//
+//        @Rest(path="", method="", serviceRoot="")
+//        @Rpc
+//        SampleResponse update(SampleRequestArgs args);
+//    }
 
     @Override
     public void initView(LayoutView view) {

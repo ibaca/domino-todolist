@@ -156,7 +156,7 @@ public class ItemsClientModuleTest {
         fakeView.toggle("added");
         assertThat(clientContext.getDefaultRoutingListener().isSent(ToggleItemServerRequest.class)).isTrue();
         ToggleItemServerRequest request = clientContext.getDefaultRoutingListener().getRequest(ToggleItemServerRequest.class);
-        assertThat(request.buildArguments().getTitle()).isEqualTo("added");
+        assertThat(request.arguments().getTitle()).isEqualTo("added");
     }
 
     @Test

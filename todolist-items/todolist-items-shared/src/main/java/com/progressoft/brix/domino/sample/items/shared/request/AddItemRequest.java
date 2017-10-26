@@ -8,7 +8,7 @@ public class AddItemRequest extends ServerRequest implements TodoItem {
 
     private String itemTitle;
     private String itemDescription;
-    private boolean done;
+    private boolean done=false;
 
     public AddItemRequest() {
     }

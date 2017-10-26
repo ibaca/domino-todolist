@@ -5,6 +5,10 @@ import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
 import com.progressoft.brix.domino.sample.items.client.requests.*;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
+import com.progressoft.brix.domino.sample.items.shared.request.AddItemRequest;
+import com.progressoft.brix.domino.sample.items.shared.request.LoadItemsRequest;
+import com.progressoft.brix.domino.sample.items.shared.request.RemoveRequest;
+import com.progressoft.brix.domino.sample.items.shared.request.ToggleItemRequest;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse.Item;
 
 
 @Presenter
@@ -26,7 +28,16 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onNewItem(String title, String description) {
-        new AddItemServerRequest(title, description).send();
+        new AddItemServerRequest()
+                .onSuccess(response -> {
+                    if (response.isAdded()) {
+                        view.addItem(title, description, false);
+                        LOGGER.info("Todo Items - Item added to view " + title);
+                    }
+                })
+                .onFailed(failedResponse -> {
+
+                }).send(new AddItemRequest(title, description, false));
     }
 
     @Override
@@ -36,7 +47,9 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onItemStateChanged(TodoItem item) {
-        new ToggleItemServerRequest(item.getItemTitle()).send();
+        new ToggleItemServerRequest().onSuccess(response -> {
+
+        }).send(new ToggleItemRequest(item.getItemTitle()));
     }
 
     @Override
@@ -90,7 +103,9 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void loadItems() {
-        new LoadItemsServerRequest().send();
+        new LoadItemsServerRequest().onSuccess(response ->
+                response.getItems().forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone())))
+                .send(new LoadItemsRequest());
     }
 
     private void refreshItems() {
@@ -98,37 +113,19 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
         loadItems();
     }
 
-    @Override
-    public void onItemAdded(TodoItem item) {
-        view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone());
-        LOGGER.info("Todo Items - Item added to view "+item.getItemTitle());
-    }
-
-    @Override
-    public void onItemsLoaded(List<Item> items) {
-        items.forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone()));
-    }
-
-    @Override
-    public void onItemsCleared(boolean cleared) {
-        if (cleared) {
-            clearView();
-        } else
-            LOGGER.error("Error while clearing all items");
-    }
-
     private void clearAll() {
-        new ClearAllServerRequest().send();
+        new ClearAllServerRequest().onSuccess(response -> {
+            if (response.isCleared()) {
+                clearView();
+            } else
+                LOGGER.error("Error while clearing all items");
+        }).send(new RemoveRequest());
     }
 
     private void removeDoneItems() {
-        new ClearDoneServerRequest().send();
-    }
-
-    public void onDoneCleared() {
-        List<TodoItem> doneItems = addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList());
-
-        clearView(doneItems);
+        new ClearDoneServerRequest().onSuccess(
+                response -> clearView(addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList())))
+                .send(new RemoveRequest());
     }
 
     private void clearView(List<TodoItem> items) {
@@ -139,5 +136,4 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     private void clearView() {
         clearView(addedItems);
     }
-
 }
