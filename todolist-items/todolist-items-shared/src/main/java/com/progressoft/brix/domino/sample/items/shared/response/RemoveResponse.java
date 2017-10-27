@@ -1,8 +1,8 @@
 package com.progressoft.brix.domino.sample.items.shared.response;
 
-import com.progressoft.brix.domino.api.shared.request.ServerResponse;
+import com.progressoft.brix.domino.api.shared.request.ResponseBean;
 
-public class RemoveResponse extends ServerResponse {
+public class RemoveResponse extends ResponseBean {
 
     private boolean cleared;
 

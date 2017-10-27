@@ -1,7 +1,7 @@
 package com.progressoft.brix.domino.sample.items.shared.request;
 
-import com.progressoft.brix.domino.api.shared.request.ServerRequest;
+import com.progressoft.brix.domino.api.shared.request.RequestBean;
 
-public class LoadItemsRequest extends ServerRequest {
+public class LoadItemsRequest extends RequestBean {
     public static final String PATH = "items";
 }

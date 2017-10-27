@@ -1,8 +1,8 @@
 package com.progressoft.brix.domino.sample.items.shared.response;
 
-import com.progressoft.brix.domino.api.shared.request.ServerResponse;
+import com.progressoft.brix.domino.api.shared.request.ResponseBean;
 
-public class ToggleItemResponse extends ServerResponse {
+public class ToggleItemResponse extends ResponseBean {
 
     private boolean done;
 

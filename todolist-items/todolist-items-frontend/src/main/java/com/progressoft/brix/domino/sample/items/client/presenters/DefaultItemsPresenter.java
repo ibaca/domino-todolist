@@ -27,13 +27,14 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onNewItem(String title, String description) {
-        new AddItemServerRequest()
+        TodoItemsRequestFactory.INSTANCE.add(new AddItemRequest(title, description, false))
                 .onSuccess(response -> {
                     if (response.isAdded()) {
                         view.addItem(title, description, false);
                         LOGGER.info("Todo Items - Item added to view " + title);
                     }
-                }).send(new AddItemRequest(title, description, false));
+                }).onFailed(failedResponse -> {})
+                .send();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onItemStateChanged(TodoItem item) {
-        new ToggleItemServerRequest().send(new ToggleItemRequest(item.getItemTitle()));
+        TodoItemsRequestFactory.INSTANCE.toggle(new ToggleItemRequest(item.getItemTitle())).onSuccess(response -> {}).send();
     }
 
     @Override
@@ -97,9 +98,9 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void loadItems() {
-        new LoadItemsServerRequest().onSuccess(response ->
+        TodoItemsRequestFactory.INSTANCE.list(new LoadItemsRequest()).onSuccess(response ->
                 response.getItems().forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone())))
-                .send(new LoadItemsRequest());
+                .send();
     }
 
     private void refreshItems() {
@@ -108,18 +109,18 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void clearAll() {
-        new ClearAllServerRequest().onSuccess(response -> {
+        TodoItemsRequestFactory.INSTANCE.clear(new RemoveRequest()).onSuccess(response -> {
             if (response.isCleared()) {
                 clearView();
             } else
                 LOGGER.error("Error while clearing all items");
-        }).send(new RemoveRequest());
+        }).send();
     }
 
     private void removeDoneItems() {
-        new ClearDoneServerRequest().onSuccess(
+        TodoItemsRequestFactory.INSTANCE.clearDone(new RemoveRequest()).onSuccess(
                 response -> clearView(addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList())))
-                .send(new RemoveRequest());
+                .send();
     }
 
     private void clearView(List<TodoItem> items) {

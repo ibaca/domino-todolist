@@ -1,8 +1,8 @@
 package com.progressoft.brix.domino.sample.items.shared.request;
 
-import com.progressoft.brix.domino.api.shared.request.ServerRequest;
+import com.progressoft.brix.domino.api.shared.request.RequestBean;
 
-public class ToggleItemRequest extends ServerRequest{
+public class ToggleItemRequest extends RequestBean{
 
     public static final String PATH = "toggle";
     private String title;

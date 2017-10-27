@@ -1,11 +1,11 @@
 package com.progressoft.brix.domino.sample.items.shared.response;
 
-import com.progressoft.brix.domino.api.shared.request.ServerResponse;
+import com.progressoft.brix.domino.api.shared.request.ResponseBean;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 
 import java.util.List;
 
-public class LoadItemsResponse extends ServerResponse {
+public class LoadItemsResponse extends ResponseBean {
 
     private List<Item> items;
 

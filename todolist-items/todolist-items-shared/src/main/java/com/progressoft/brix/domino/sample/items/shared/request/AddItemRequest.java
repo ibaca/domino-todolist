@@ -1,9 +1,9 @@
 package com.progressoft.brix.domino.sample.items.shared.request;
 
-import com.progressoft.brix.domino.api.shared.request.ServerRequest;
+import com.progressoft.brix.domino.api.shared.request.RequestBean;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 
-public class AddItemRequest extends ServerRequest implements TodoItem {
+public class AddItemRequest extends RequestBean implements TodoItem {
     public static final String PATH = "add";
 
     private String itemTitle;
