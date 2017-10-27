@@ -1,10 +1,10 @@
 package com.progressoft.brix.domino.sample.layout.client.presenters;
 
 import com.progressoft.brix.domino.api.client.annotations.Presenter;
-import com.progressoft.brix.domino.api.client.annotations.Request;
 import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
 import com.progressoft.brix.domino.api.shared.extension.MainContext;
 import com.progressoft.brix.domino.sample.layout.client.views.LayoutView;
+import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutExtensionPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,18 +13,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Presenter
-public class DefaultLayoutPresenter extends BaseClientPresenter<LayoutView> implements LayoutPresenter {
+public class DefaultLayoutPresenter extends BaseClientPresenter<LayoutView> implements LayoutPresenter, LayoutContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLayoutPresenter.class);
     private CreateItemHandler createItemHandler;
-
-//    @Request
-//    public interface SampleRequest{
-//
-//        @Rest(path="", method="", serviceRoot="")
-//        @Rpc
-//        SampleResponse update(SampleRequestArgs args);
-//    }
 
     @Override
     public void initView(LayoutView view) {
@@ -70,7 +62,7 @@ public class DefaultLayoutPresenter extends BaseClientPresenter<LayoutView> impl
     }
 
     @Override
-    public void setOnCreatHandler(CreateItemHandler createItemHandler) {
+    public void setOnCreateHandler(CreateItemHandler createItemHandler) {
         if (isNull(createItemHandler))
             throw new HandlerConnotBeNullException();
         this.createItemHandler=createItemHandler;

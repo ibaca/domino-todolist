@@ -59,7 +59,7 @@ public class ItemsClientModuleTest {
         }
 
         @Override
-        public void setOnCreatHandler(CreateItemHandler createItemHandler) {
+        public void setOnCreateHandler(CreateItemHandler createItemHandler) {
             this.createItemHandler = createItemHandler;
         }
 

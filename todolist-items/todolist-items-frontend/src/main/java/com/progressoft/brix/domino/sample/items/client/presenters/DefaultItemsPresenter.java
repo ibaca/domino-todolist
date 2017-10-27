@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Presenter
 public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implements ItemsPresenter,
         ItemsView.ItemsUiHandlers {
@@ -34,9 +33,6 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
                         view.addItem(title, description, false);
                         LOGGER.info("Todo Items - Item added to view " + title);
                     }
-                })
-                .onFailed(failedResponse -> {
-
                 }).send(new AddItemRequest(title, description, false));
     }
 
@@ -47,9 +43,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onItemStateChanged(TodoItem item) {
-        new ToggleItemServerRequest().onSuccess(response -> {
-
-        }).send(new ToggleItemRequest(item.getItemTitle()));
+        new ToggleItemServerRequest().send(new ToggleItemRequest(item.getItemTitle()));
     }
 
     @Override
@@ -69,7 +63,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
         initFakeMenuItems(context);
 
-        context.setOnCreatHandler(() -> view.showAddDialog());
+        context.setOnCreateHandler(() -> view.showAddDialog());
 
     }
 

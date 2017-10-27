@@ -95,7 +95,7 @@ public class LayoutClientModuleTest {
         CreateItemHandler createItemHandler= () -> {
             handlerCalled[0] =true;
         };
-        fakeLayoutContribution.context.setOnCreatHandler(createItemHandler);
+        fakeLayoutContribution.context.setOnCreateHandler(createItemHandler);
         fakeView.onCreate();
         assertThat(presenterSpy.receivedCreateEvent).isTrue();
         assertThat(handlerCalled[0]).isTrue();
@@ -103,7 +103,7 @@ public class LayoutClientModuleTest {
 
     @Test(expected = HandlerConnotBeNullException.class)
     public void givenLayoutContext_whenSetNullCreateHandler_thenShouldThrowException() throws Exception {
-        fakeLayoutContribution.context.setOnCreatHandler(null);
+        fakeLayoutContribution.context.setOnCreateHandler(null);
     }
 
 

@@ -78,14 +78,6 @@ public class TodoItemPanel extends HBox implements TodoItem {
         return titleLabel;
     }
 
-    public void setItemTitle(String itemTitle) {
-        this.itemTitle = itemTitle;
-    }
-
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
-    }
-
     @Override
     public boolean isDone() {
         return selector.isSelected();
@@ -99,10 +91,6 @@ public class TodoItemPanel extends HBox implements TodoItem {
     @Override
     public String getItemDescription() {
         return itemDescription;
-    }
-
-    public void setDone(boolean done) {
-        this.selector.setSelected(done);
     }
 
     @Override
