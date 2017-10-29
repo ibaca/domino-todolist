@@ -117,11 +117,6 @@ public class ItemsClientModuleTest {
     }
 
     @Test
-    public void givenModuleLoaded_whenViewIsInitialized_thenShouldRegisterUiHandlers() throws Exception {
-        assertThat(fakeView.getUiHandlers()).isNotNull();
-    }
-
-    @Test
     public void givenNewItemAdded_whenAddItemHandlerIsCalled_thenShouldSendAddItemServerRequestAndItemShouldBeAddedToItemsList() throws Exception {
         clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(true));
         fakeView.addNewItem("title", "description");
