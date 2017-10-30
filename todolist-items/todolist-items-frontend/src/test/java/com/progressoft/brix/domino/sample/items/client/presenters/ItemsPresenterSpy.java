@@ -1,5 +1,6 @@
 package com.progressoft.brix.domino.sample.items.client.presenters;
 
+import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.layout.shared.extension.LayoutContext;
 
@@ -15,6 +16,14 @@ public class ItemsPresenterSpy extends DefaultItemsPresenter{
         this.layoutContext=context;
     }
 
+    public ItemsView.ItemsUiHandlers getUiItemsHandlers(){
+        return this;
+    }
+
+    public TodoItem getItem(String title) {
+        return todoItems.stream().filter(i->i.getItemTitle().equals(title)).findFirst().orElse(null);
+    }
+
     @Override
     protected String getConcrete() {
         return DefaultItemsPresenter.class.getCanonicalName();
@@ -25,6 +34,6 @@ public class ItemsPresenterSpy extends DefaultItemsPresenter{
     }
 
     public List<TodoItem> getItems() {
-        return addedItems;
+        return todoItems;
     }
 }

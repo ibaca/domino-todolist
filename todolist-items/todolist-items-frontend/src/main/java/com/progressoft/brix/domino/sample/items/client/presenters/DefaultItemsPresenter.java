@@ -23,7 +23,12 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultItemsPresenter.class);
 
-    protected List<TodoItem> addedItems = new ArrayList<>();
+    protected List<TodoItem> todoItems = new ArrayList<>();
+
+    @Override
+    public void initView(ItemsView view) {
+        view.setUiHandlers(this);
+    }
 
     @Override
     public void onNewItem(String title, String description) {
@@ -33,23 +38,22 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
                         view.addItem(title, description, false);
                         LOGGER.info("Todo Items - Item added to view " + title);
                     }
-                }).onFailed(failedResponse -> {})
+                }).onFailed(failedResponse -> {
+        })
                 .send();
     }
 
     @Override
     public void onSuccessCreation(TodoItem item) {
-        addedItems.add(item);
+        todoItems.add(item);
     }
 
     @Override
     public void onItemStateChanged(TodoItem item) {
-        TodoItemsRequestFactory.INSTANCE.toggle(new ToggleItemRequest(item.getItemTitle())).onSuccess(response -> {}).send();
-    }
-
-    @Override
-    public void initView(ItemsView view) {
-        view.setUiHandlers(this);
+        TodoItemsRequestFactory.INSTANCE.toggle(new ToggleItemRequest(item.getItemTitle())).onSuccess(
+                response -> todoItems.stream().filter(i -> i.getItemTitle().equals(item.getItemTitle())).findFirst()
+                        .ifPresent(
+                                TodoItem::toggle)).send();
     }
 
     @Override
@@ -99,7 +103,8 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     private void loadItems() {
         TodoItemsRequestFactory.INSTANCE.list(new LoadItemsRequest()).onSuccess(response ->
-                response.getItems().forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone())))
+                response.getItems()
+                        .forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone())))
                 .send();
     }
 
@@ -119,16 +124,16 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     private void removeDoneItems() {
         TodoItemsRequestFactory.INSTANCE.clearDone(new RemoveRequest()).onSuccess(
-                response -> clearView(addedItems.stream().filter(TodoItem::isDone).collect(Collectors.toList())))
+                response -> clearView(todoItems.stream().filter(TodoItem::isDone).collect(Collectors.toList())))
                 .send();
     }
 
     private void clearView(List<TodoItem> items) {
         items.forEach(view::remove);
-        addedItems.removeAll(items);
+        todoItems.removeAll(items);
     }
 
     private void clearView() {
-        clearView(addedItems);
+        clearView(todoItems);
     }
 }

@@ -7,6 +7,7 @@ import com.progressoft.brix.domino.sample.items.client.presenters.ItemsPresenter
 import com.progressoft.brix.domino.sample.items.client.presenters.ItemsPresenterSpy;
 import com.progressoft.brix.domino.sample.items.client.requests.*;
 import com.progressoft.brix.domino.sample.items.client.views.FakeItemsView;
+import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.items.shared.response.AddItemResponse;
 import com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse;
@@ -28,14 +29,13 @@ import java.util.stream.Collectors;
 
 import static com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse.Item;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 
 
 @ClientModule(name = "TestItems")
 @RunWith(GwtMockitoTestRunner.class)
 public class ItemsClientModuleTest {
 
-    public static final int DEFAULT_ITEMS_COUNT = 4;
+    private static final int DEFAULT_ITEMS_COUNT = 4;
 
     public static class FakeLayoutContext implements LayoutContext {
 
@@ -63,15 +63,15 @@ public class ItemsClientModuleTest {
             this.createItemHandler = createItemHandler;
         }
 
-        public Map<String, LayoutMenuItem> getMenuItems() {
+        Map<String, LayoutMenuItem> getMenuItems() {
             return meuItems;
         }
 
-        public CreateItemHandler getShowAddDialogHandler() {
+        CreateItemHandler getShowAddDialogHandler() {
             return createItemHandler;
         }
 
-        public LayoutContent getContent() {
+        LayoutContent getContent() {
             return content;
         }
     }
@@ -80,11 +80,13 @@ public class ItemsClientModuleTest {
     private FakeItemsView fakeView;
     private ClientContext clientContext;
     private FakeLayoutContext fakeLayoutContext;
+    private ItemsView.ItemsUiHandlers uiHandlers;
 
     @Before
     public void setUp() {
         presenterSpy = new ItemsPresenterSpy();
         fakeLayoutContext = new FakeLayoutContext();
+        uiHandlers=presenterSpy.getUiItemsHandlers();
 
         DominoTestClient.useModules(new ItemsModuleConfiguration(), new TestItemsModuleConfiguration())
                 .replacePresenter(ItemsPresenter.class, presenterSpy)
@@ -119,17 +121,12 @@ public class ItemsClientModuleTest {
     @Test
     public void givenNewItemAdded_whenAddItemHandlerIsCalled_thenShouldSendAddItemServerRequestAndItemShouldBeAddedToItemsList() throws Exception {
         clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(true));
-        fakeView.addNewItem("title", "description");
+        uiHandlers.onNewItem("title", "description");
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_add.class)).isTrue();
-        assertThat(presenterSpy.getItems()).contains(fakeView.getItem("title"));
-    }
-
-    @Test
-    public void givenNewItemAdded_whenAddItemHandlerIsCalled_thenItemShouldBeAddedToTheView() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(true));
-        fakeView.addNewItem("title", "description");
-        TodoItem item = fakeView.getItem("title");
+        final TodoItem item = presenterSpy.getItem("title");
+        assertThat(presenterSpy.getItems()).contains(item);
         assertThat(item).isNotNull();
+        assertThat(item.getItemTitle()).isEqualTo("title");
         assertThat(item.getItemDescription()).isEqualTo("description");
         assertThat(item.isDone()).isFalse();
     }
@@ -137,27 +134,22 @@ public class ItemsClientModuleTest {
     @Test
     public void givenAddItemRequestSent_whenResponseReturnedWithFalse_thenItemShouldNotBeAddedToItemsList() throws Exception {
         clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(false));
-        fakeView.addNewItem("notAdded", "description");
+        uiHandlers.onNewItem("notAdded", "description");
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_add.class)).isTrue();
-        assertThat(fakeView.getItem("notAdded")).isNull();
-        assertThat(presenterSpy.getItems().contains(fakeView.getItem("title"))).isFalse();
+        assertThat(presenterSpy.getItems()).doesNotContain(presenterSpy.getItem("notAdded"));
     }
 
     @Test
     public void givenRegisteredItemStateHandler_whenItemStateChangedAndHandlerIsFired_thenShouldSendToggleItemRequest() throws Exception {
         clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(true));
         clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_toggle.class).returnResponse(new ToggleItemResponse(true));
-        fakeView.addNewItem("added", "description");
-        fakeView.toggle("added");
+        uiHandlers.onNewItem("added", "description");
+        uiHandlers.onItemStateChanged(presenterSpy.getItem("added"));
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_toggle.class)).isTrue();
         TodoItemsRequestFactory.TodoItemsRequest_toggle
                 request = clientContext.getDefaultRoutingListener().getRequest(TodoItemsRequestFactory.TodoItemsRequest_toggle.class);
         assertThat(request.requestBean().getTitle()).isEqualTo("added");
-    }
-
-    @Test
-    public void givenModule_whenContributingToLayoutExtensionPoint_thenShouldReceiveLayoutContext() throws Exception {
-        assertThat(presenterSpy.getLayoutContext()).isNotNull();
+        assertThat(presenterSpy.getItem("added").isDone()).isTrue();
     }
 
     @Test
@@ -195,7 +187,7 @@ public class ItemsClientModuleTest {
     }
 
     @Test
-    public void givenModule_whenShowAddNewItemDialogHandlertriggered_thenViewShouldShowAddDialog() throws Exception {
+    public void givenModule_whenShowAddNewItemDialogHandlerTriggered_thenViewShouldShowAddDialog() throws Exception {
         fakeLayoutContext.getShowAddDialogHandler().onCreate();
         assertThat(fakeView.isAddDialogOpen()).isTrue();
     }
@@ -203,21 +195,21 @@ public class ItemsClientModuleTest {
     @Test
     public void givenModule_whenLayoutContextReceived_thenShouldSendLoadTodoItemsRequest() throws Exception {
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_list.class)).isTrue();
-        assertThat(fakeView.getItem("item1")).isNotNull();
-        assertThat(fakeView.getItem("item1").getItemDescription()).isEqualTo("description1");
-        assertThat(fakeView.getItem("item1").isDone()).isFalse();
+        assertThat(presenterSpy.getItem("item1")).isNotNull();
+        assertThat(presenterSpy.getItem("item1").getItemDescription()).isEqualTo("description1");
+        assertThat(presenterSpy.getItem("item1").isDone()).isFalse();
 
-        assertThat(fakeView.getItem("item2")).isNotNull();
-        assertThat(fakeView.getItem("item2").getItemDescription()).isEqualTo("description2");
-        assertThat(fakeView.getItem("item2").isDone()).isTrue();
+        assertThat(presenterSpy.getItem("item2")).isNotNull();
+        assertThat(presenterSpy.getItem("item2").getItemDescription()).isEqualTo("description2");
+        assertThat(presenterSpy.getItem("item2").isDone()).isTrue();
 
-        assertThat(fakeView.getItem("item3")).isNotNull();
-        assertThat(fakeView.getItem("item3").getItemDescription()).isEqualTo("description3");
-        assertThat(fakeView.getItem("item3").isDone()).isTrue();
+        assertThat(presenterSpy.getItem("item3")).isNotNull();
+        assertThat(presenterSpy.getItem("item3").getItemDescription()).isEqualTo("description3");
+        assertThat(presenterSpy.getItem("item3").isDone()).isTrue();
 
-        assertThat(fakeView.getItem("item4")).isNotNull();
-        assertThat(fakeView.getItem("item4").getItemDescription()).isEqualTo("description4");
-        assertThat(fakeView.getItem("item4").isDone()).isFalse();
+        assertThat(presenterSpy.getItem("item4")).isNotNull();
+        assertThat(presenterSpy.getItem("item4").getItemDescription()).isEqualTo("description4");
+        assertThat(presenterSpy.getItem("item4").isDone()).isFalse();
     }
 
     @Test
@@ -226,8 +218,8 @@ public class ItemsClientModuleTest {
         fakeLayoutContext.getMenuItems().get("Clear Done").selectHandler().onSelect();
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_clearDone.class)).isTrue();
         assertThat(presenterSpy.getItems().stream().filter(TodoItem::isDone).collect(Collectors.toSet())).isEmpty();
-        assertThat(fakeView.getItem("item2")).isNull();
-        assertThat(fakeView.getItem("item3")).isNull();
+        assertThat(presenterSpy.getItem("item2")).isNull();
+        assertThat(presenterSpy.getItem("item3")).isNull();
     }
 
     @Test
@@ -236,7 +228,6 @@ public class ItemsClientModuleTest {
         fakeLayoutContext.getMenuItems().get("Clear All").selectHandler().onSelect();
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_clear.class)).isTrue();
         assertThat(presenterSpy.getItems()).isEmpty();
-        assertThat(fakeView.getItems()).isEmpty();
     }
 
     @Test
@@ -245,7 +236,6 @@ public class ItemsClientModuleTest {
         fakeLayoutContext.getMenuItems().get("Clear All").selectHandler().onSelect();
         assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_clear.class)).isTrue();
         assertThat(presenterSpy.getItems().size()).isEqualTo(DEFAULT_ITEMS_COUNT);
-        assertThat(fakeView.getItems().size()).isEqualTo(DEFAULT_ITEMS_COUNT);
     }
 
     @Test
@@ -254,14 +244,8 @@ public class ItemsClientModuleTest {
         Item item6 = new Item("item6", "description6", false);
         presenterSpy.getItems().add(item5);
         presenterSpy.getItems().add(item6);
-        fakeView.getItems().put("item5", item5);
-        fakeView.getItems().put("item6", item6);
         fakeLayoutContext.getMenuItems().get("Refresh").selectHandler().onSelect();
         assertThat(presenterSpy.getItems().size()).isEqualTo(DEFAULT_ITEMS_COUNT);
         assertThat(presenterSpy.getItems()).doesNotContain(item5, item6);
-        assertThat(fakeView.getItems().size()).isEqualTo(DEFAULT_ITEMS_COUNT);
-        assertThat(fakeView.getItems()).doesNotContain(entry("item5", item5), entry("item6", item6));
     }
-
-
 }
