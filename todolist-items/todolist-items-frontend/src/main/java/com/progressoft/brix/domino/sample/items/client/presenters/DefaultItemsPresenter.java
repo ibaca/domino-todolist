@@ -2,7 +2,7 @@ package com.progressoft.brix.domino.sample.items.client.presenters;
 
 import com.progressoft.brix.domino.api.client.annotations.Presenter;
 import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
-import com.progressoft.brix.domino.sample.items.client.requests.*;
+import com.progressoft.brix.domino.sample.items.client.requests.TodoItemsRequestFactory;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.items.shared.request.AddItemRequest;
@@ -38,9 +38,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
                         view.addItem(title, description, false);
                         LOGGER.info("Todo Items - Item added to view " + title);
                     }
-                }).onFailed(failedResponse -> {
-        })
-                .send();
+                }).send();
     }
 
     @Override

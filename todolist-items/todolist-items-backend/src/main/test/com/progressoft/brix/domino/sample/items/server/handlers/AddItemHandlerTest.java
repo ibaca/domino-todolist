@@ -5,6 +5,7 @@ import com.progressoft.brix.domino.sample.items.shared.request.AddItemRequest;
 import com.progressoft.brix.domino.sample.items.shared.request.LoadItemsRequest;
 import com.progressoft.brix.domino.sample.items.shared.request.RemoveRequest;
 import com.progressoft.brix.domino.sample.items.shared.request.ToggleItemRequest;
+import com.progressoft.brix.domino.test.api.DominoTestServer;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -16,9 +17,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.progressoft.brix.domino.test.api.DominoTestServer.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Domino uses Vertx by default to create an Http server, so when we test our endpoints we use vertx-unit.
+ * @see <a href="http://vertx.io/docs/vertx-unit/java/">Vertx unit</a>
+ */
 @RunWith(VertxUnitRunner.class)
 public class AddItemHandlerTest {
 
@@ -26,20 +30,27 @@ public class AddItemHandlerTest {
 
     @Rule
     public RunTestOnContext vertxRule = new RunTestOnContext();
-    private HttpServerContext serverContext;
-    private DominoTestContext dominoContext;
+    private DominoTestServer.HttpServerContext serverContext;
 
+    /**
+     * Domino provides a way to start up a test domino server with two handlers that works as hooks to obtain a domino test context
+     * we start the domino test server by supplying a vertx instance, we use the onBeforeLoad method to do things before the application domino modules are loaded
+     * or to obtain a DominoTestContext object, the onAfterLoad method can be used to do stuff after the modules are loaded and to obtain a DominoTestContext and the HttpServerContext
+     * @param testContext
+     * @throws Exception
+     */
     @Before
     public void setUp(TestContext testContext) throws Exception {
         vertx=vertxRule.vertx();
-        vertx(vertx).onBeforeLoad(dominoTestContext -> {
-            storeTestItems();
-        }).onAfterLoad((dominoTestContext, httpServerContext) -> {
-            dominoContext=dominoTestContext;
-            serverContext=httpServerContext;
-        }).start(testContext);
+        DominoTestServer.vertx(vertx)
+                .onBeforeLoad(dominoTestContext -> storeTestItems())
+                .onAfterLoad((dominoTestContext, httpServerContext) -> serverContext=httpServerContext)
+                .start(testContext);
     }
 
+    /**
+     * just initialize the store with 10 items
+     */
     private void storeTestItems() {
         for(int i=0;i<10;i++){
             AddItemRequest addItemRequest=new AddItemRequest("item"+i, "itemDesc"+i, i>4);
@@ -47,6 +58,11 @@ public class AddItemHandlerTest {
         }
     }
 
+    /**
+     *
+     * @param testContext
+     * @throws Exception
+     */
     @Test
     public void whenAddItemRequestIsSent_thenTodoItemShouldBeAddedToTheStore(TestContext testContext) throws Exception {
         Async async=testContext.async();
