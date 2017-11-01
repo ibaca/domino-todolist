@@ -99,7 +99,6 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/classes/static</outputDirectory>
                             <excludeTransitive>true</excludeTransitive>
-                            <includes>/webroot/app/**/*.*</includes>
                         </configuration>
                     </execution>
                 </executions>

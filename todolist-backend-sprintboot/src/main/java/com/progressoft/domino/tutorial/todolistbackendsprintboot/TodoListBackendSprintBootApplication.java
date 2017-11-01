@@ -4,11 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TodolistBackendSprintbootApplication {
+public class TodoListBackendSprintBootApplication {
 
 	public static void main(String[] args) {
-
-
-		SpringApplication.run(TodolistBackendSprintbootApplication.class, args);
+		SpringApplication.run(TodoListBackendSprintBootApplication.class, args);
 	}
 }
