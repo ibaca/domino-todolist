@@ -22,6 +22,8 @@ public abstract class Item implements IsElement<HTMLElement>, TodoItem {
     @DataElement
     PaperCheckboxElement selector;
 
+    private boolean done=false;
+
     abstract ItemsView.ItemsUiHandlers uiHandlers();
 
     public static Item create(ItemsView.ItemsUiHandlers uiHandlers) {
@@ -52,7 +54,7 @@ public abstract class Item implements IsElement<HTMLElement>, TodoItem {
 
     @Override
     public boolean isDone() {
-        return selector.getActive();
+        return this.done;
     }
 
     @Override
@@ -67,6 +69,6 @@ public abstract class Item implements IsElement<HTMLElement>, TodoItem {
 
     @Override
     public void toggle() {
-        this.selector.setChecked(!this.selector.getChecked());
+        this.done = !this.done;
     }
 }

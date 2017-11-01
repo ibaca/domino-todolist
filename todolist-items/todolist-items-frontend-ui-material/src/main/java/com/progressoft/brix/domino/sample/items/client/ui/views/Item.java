@@ -11,11 +11,15 @@ import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import gwt.material.design.client.ui.MaterialCheckBox;
 import gwt.material.design.client.ui.MaterialCollectionItem;
 import gwt.material.design.client.ui.MaterialLabel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.progressoft.brix.domino.sample.items.client.ui.views.Bundle.INSTANCE;
 
 
 public class Item extends Composite implements TodoItem {
+
+    private static final Logger LOGGER= LoggerFactory.getLogger(Item.class);
 
     private final ItemsView.ItemsUiHandlers uiHandlers;
     @UiField
@@ -29,9 +33,11 @@ public class Item extends Composite implements TodoItem {
 
     MaterialCollectionItem root;
 
+    private boolean done=false;
+
     @Override
     public boolean isDone() {
-        return selector.getValue();
+        return done;
     }
 
     @Override
@@ -88,6 +94,6 @@ public class Item extends Composite implements TodoItem {
 
     @Override
     public void toggle() {
-        this.selector.setValue(!this.selector.getValue());
+        this.done = !this.done;
     }
 }

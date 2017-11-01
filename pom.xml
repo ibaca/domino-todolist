@@ -125,6 +125,7 @@
     <modules>
         <module>todolist-frontend</module>
         <module>todolist-backend</module>
+        <module>todolist-backend-sprintboot</module>
         <module>todolist-layout</module>
         <module>todolist-items</module>
         <module>todolist-desktop-frontend</module>

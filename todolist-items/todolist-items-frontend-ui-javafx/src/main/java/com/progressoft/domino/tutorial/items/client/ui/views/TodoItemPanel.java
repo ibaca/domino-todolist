@@ -22,6 +22,8 @@ public class TodoItemPanel extends HBox implements TodoItem {
     private Text titleLabel;
     private Text descriptionLabel;
 
+    private boolean done=false;
+
     public TodoItemPanel(String itemTitle, String itemDescription, boolean done, ItemsView.ItemsUiHandlers uiHandlers) {
         this.itemTitle = itemTitle;
         this.itemDescription = itemDescription;
@@ -73,14 +75,14 @@ public class TodoItemPanel extends HBox implements TodoItem {
     }
 
     private Text initLabel(String value) {
-        Text titleLabel = new Text(value);
-        titleLabel.setFont(Font.font("Sans-serif", FontWeight.BOLD, 14));
-        return titleLabel;
+        Text label = new Text(value);
+        label.setFont(Font.font("Sans-serif", FontWeight.BOLD, 14));
+        return label;
     }
 
     @Override
     public boolean isDone() {
-        return selector.isSelected();
+        return this.done;
     }
 
     @Override
@@ -95,6 +97,6 @@ public class TodoItemPanel extends HBox implements TodoItem {
 
     @Override
     public void toggle() {
-        this.selector.setSelected(!this.selector.isSelected());
+        this.done = !this.done;
     }
 }

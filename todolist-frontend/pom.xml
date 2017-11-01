@@ -133,8 +133,8 @@
                     <extra>${extra.directory}/app/gwt/extra</extra>
                     <compilerArgs>
                         <arg>-saveSource</arg>
-                        <!--<arge>-style</arge>
-                        <arg>PRETTY</arg>-->
+                        <arge>-style</arge>
+                        <arg>PRETTY</arg>
                     </compilerArgs>
                     <systemProperties>
                         <gwt.persistentunitcachedir>${project.build.directory}/cacheDir</gwt.persistentunitcachedir>

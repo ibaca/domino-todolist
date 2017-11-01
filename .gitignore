@@ -82,3 +82,5 @@ src/main/webapp/gwt_bree/
 **/*.log
 
 **/bin/
+**/.vertx/*.*
+**/.vertx/

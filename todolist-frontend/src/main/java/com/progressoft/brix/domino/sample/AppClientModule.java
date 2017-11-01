@@ -10,7 +10,7 @@ public class AppClientModule implements EntryPoint {
     private static final Logger LOGGER = Logger.getLogger(AppClientModule.class.getName());
 
     public void onModuleLoad() {
-        LOGGER.info("todolist Application frontend have been initialized.");
+        LOGGER.info("todo-list Application frontend have been initialized.");
         ClientApp.make().run();
 
     }
