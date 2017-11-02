@@ -1,6 +1,5 @@
 package com.progressoft.brix.domino.sample.items.client.requests;
 
-import com.progressoft.brix.domino.api.client.annotations.Classifier;
 import com.progressoft.brix.domino.api.client.annotations.Path;
 import com.progressoft.brix.domino.api.client.annotations.RequestFactory;
 import com.progressoft.brix.domino.api.client.request.Response;
@@ -33,9 +32,4 @@ public interface TodoItemsRequests {
     @Path(ToggleItemRequest.PATH)
     Response<ToggleItemResponse> toggle(ToggleItemRequest toggleItemRequest);
 
-    @Path(ToggleItemRequest.PATH)
-    Response<ToggleItemResponse> test();
-
-    @Path(ToggleItemRequest.PATH)
-    Response<ToggleItemResponse> test2();
 }
