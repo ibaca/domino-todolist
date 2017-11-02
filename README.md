@@ -1,8 +1,8 @@
 # domino-todolist
 Todo-list using [Domino](https://github.com/GwtDomino/domino) implementing UI with three different ways:
 
-- elemento + Polymer components
-- UIBinder + GWTMaterialDesign
+- [Elemento](https://github.com/hal/elemento) + [Polymer components](https://github.com/manolo/gwt-polymer-elements)
+- UIBinder + [GWTMaterialDesign](https://github.com/GwtMaterialDesign/gwt-material)
 - Desktop JavaFx (Requires a jdk with javafx support)
 
 ## How to build :
