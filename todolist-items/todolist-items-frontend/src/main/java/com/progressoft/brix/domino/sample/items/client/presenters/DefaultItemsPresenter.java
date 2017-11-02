@@ -2,7 +2,7 @@ package com.progressoft.brix.domino.sample.items.client.presenters;
 
 import com.progressoft.brix.domino.api.client.annotations.Presenter;
 import com.progressoft.brix.domino.api.client.mvp.presenter.BaseClientPresenter;
-import com.progressoft.brix.domino.sample.items.client.requests.TodoItemsRequestFactory;
+import com.progressoft.brix.domino.sample.items.client.requests.TodoItemsRequestsFactory;
 import com.progressoft.brix.domino.sample.items.client.views.ItemsView;
 import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.items.shared.request.AddItemRequest;
@@ -32,7 +32,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onNewItem(String title, String description) {
-        TodoItemsRequestFactory.INSTANCE.add(new AddItemRequest(title, description, false))
+        TodoItemsRequestsFactory.INSTANCE.add(new AddItemRequest(title, description, false))
                 .onSuccess(response -> {
                     if (response.isAdded()) {
                         view.addItem(title, description, false);
@@ -48,7 +48,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
 
     @Override
     public void onItemStateChanged(TodoItem item) {
-        TodoItemsRequestFactory.INSTANCE.toggle(new ToggleItemRequest(item.getItemTitle())).onSuccess(
+        TodoItemsRequestsFactory.INSTANCE.toggle(new ToggleItemRequest(item.getItemTitle())).onSuccess(
                 response -> todoItems.stream().filter(i -> i.getItemTitle().equals(item.getItemTitle())).findFirst()
                         .ifPresent(
                                 TodoItem::toggle)).send();
@@ -100,7 +100,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void loadItems() {
-        TodoItemsRequestFactory.INSTANCE.list(new LoadItemsRequest()).onSuccess(response ->
+        TodoItemsRequestsFactory.INSTANCE.list(new LoadItemsRequest()).onSuccess(response ->
                 response.getItems()
                         .forEach(item -> view.addItem(item.getItemTitle(), item.getItemDescription(), item.isDone())))
                 .send();
@@ -112,7 +112,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void clearAll() {
-        TodoItemsRequestFactory.INSTANCE.clear(new RemoveRequest()).onSuccess(response -> {
+        TodoItemsRequestsFactory.INSTANCE.clear(new RemoveRequest()).onSuccess(response -> {
             if (response.isCleared()) {
                 clearView();
             } else
@@ -121,7 +121,7 @@ public class DefaultItemsPresenter extends BaseClientPresenter<ItemsView> implem
     }
 
     private void removeDoneItems() {
-        TodoItemsRequestFactory.INSTANCE.clearDone(new RemoveRequest()).onSuccess(
+        TodoItemsRequestsFactory.INSTANCE.clearDone(new RemoveRequest()).onSuccess(
                 response -> clearView(todoItems.stream().filter(TodoItem::isDone).collect(Collectors.toList())))
                 .send();
     }

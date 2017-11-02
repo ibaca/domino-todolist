@@ -100,7 +100,7 @@ public class ItemsClientModuleTest {
     }
 
     private void fakeRequests(ClientContext context) {
-        context.forRequest(TodoItemsRequestFactory.TodoItemsRequest_list.class).returnResponse(makeLoadResponse());
+        context.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_list.class).returnResponse(makeLoadResponse());
     }
 
     private LoadItemsResponse makeLoadResponse() {
@@ -120,9 +120,9 @@ public class ItemsClientModuleTest {
 
     @Test
     public void givenNewItemAdded_whenAddItemHandlerIsCalled_thenShouldSendAddItemServerRequestAndItemShouldBeAddedToItemsList() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(true));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_add.class).returnResponse(new AddItemResponse(true));
         uiHandlers.onNewItem("title", "description");
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_add.class)).isTrue();
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_add.class)).isTrue();
         final TodoItem item = presenterSpy.getItem("title");
         assertThat(presenterSpy.getItems()).contains(item);
         assertThat(item).isNotNull();
@@ -133,21 +133,21 @@ public class ItemsClientModuleTest {
 
     @Test
     public void givenAddItemRequestSent_whenResponseReturnedWithFalse_thenItemShouldNotBeAddedToItemsList() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(false));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_add.class).returnResponse(new AddItemResponse(false));
         uiHandlers.onNewItem("notAdded", "description");
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_add.class)).isTrue();
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_add.class)).isTrue();
         assertThat(presenterSpy.getItems()).doesNotContain(presenterSpy.getItem("notAdded"));
     }
 
     @Test
     public void givenRegisteredItemStateHandler_whenItemStateChangedAndHandlerIsFired_thenShouldSendToggleItemRequest() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_add.class).returnResponse(new AddItemResponse(true));
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_toggle.class).returnResponse(new ToggleItemResponse(true));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_add.class).returnResponse(new AddItemResponse(true));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_toggle.class).returnResponse(new ToggleItemResponse(true));
         uiHandlers.onNewItem("added", "description");
         uiHandlers.onItemStateChanged(presenterSpy.getItem("added"));
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_toggle.class)).isTrue();
-        TodoItemsRequestFactory.TodoItemsRequest_toggle
-                request = clientContext.getDefaultRoutingListener().getRequest(TodoItemsRequestFactory.TodoItemsRequest_toggle.class);
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_toggle.class)).isTrue();
+        TodoItemsRequestsFactory.TodoItemsRequests_toggle
+                request = clientContext.getDefaultRoutingListener().getRequest(TodoItemsRequestsFactory.TodoItemsRequests_toggle.class);
         assertThat(request.requestBean().getTitle()).isEqualTo("added");
         assertThat(presenterSpy.getItem("added").isDone()).isTrue();
     }
@@ -194,7 +194,7 @@ public class ItemsClientModuleTest {
 
     @Test
     public void givenModule_whenLayoutContextReceived_thenShouldSendLoadTodoItemsRequest() throws Exception {
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_list.class)).isTrue();
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_list.class)).isTrue();
         assertThat(presenterSpy.getItem("item1")).isNotNull();
         assertThat(presenterSpy.getItem("item1").getItemDescription()).isEqualTo("description1");
         assertThat(presenterSpy.getItem("item1").isDone()).isFalse();
@@ -214,9 +214,9 @@ public class ItemsClientModuleTest {
 
     @Test
     public void givenMenuItemsAdded_whenClearDoneIsTriggered_thenDoneItemsShouldBeRemoved() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_clearDone.class).returnResponse(new RemoveResponse(true));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_clearDone.class).returnResponse(new RemoveResponse(true));
         fakeLayoutContext.getMenuItems().get("Clear Done").selectHandler().onSelect();
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_clearDone.class)).isTrue();
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_clearDone.class)).isTrue();
         assertThat(presenterSpy.getItems().stream().filter(TodoItem::isDone).collect(Collectors.toSet())).isEmpty();
         assertThat(presenterSpy.getItem("item2")).isNull();
         assertThat(presenterSpy.getItem("item3")).isNull();
@@ -224,17 +224,17 @@ public class ItemsClientModuleTest {
 
     @Test
     public void givenMenuItemsAdded_whenClearAllIsTriggeredAndTrueReturned_thenAllItemsShouldBeRemoved() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_clear.class).returnResponse(new RemoveResponse(true));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_clear.class).returnResponse(new RemoveResponse(true));
         fakeLayoutContext.getMenuItems().get("Clear All").selectHandler().onSelect();
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_clear.class)).isTrue();
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_clear.class)).isTrue();
         assertThat(presenterSpy.getItems()).isEmpty();
     }
 
     @Test
     public void givenMenuItemsAdded_whenClearAllIsTriggeredAndFalseReturned_thenAllItemsShouldBeRemoved() throws Exception {
-        clientContext.forRequest(TodoItemsRequestFactory.TodoItemsRequest_clear.class).returnResponse(new RemoveResponse(false));
+        clientContext.forRequest(TodoItemsRequestsFactory.TodoItemsRequests_clear.class).returnResponse(new RemoveResponse(false));
         fakeLayoutContext.getMenuItems().get("Clear All").selectHandler().onSelect();
-        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestFactory.TodoItemsRequest_clear.class)).isTrue();
+        assertThat(clientContext.getDefaultRoutingListener().isSent(TodoItemsRequestsFactory.TodoItemsRequests_clear.class)).isTrue();
         assertThat(presenterSpy.getItems().size()).isEqualTo(DEFAULT_ITEMS_COUNT);
     }
 

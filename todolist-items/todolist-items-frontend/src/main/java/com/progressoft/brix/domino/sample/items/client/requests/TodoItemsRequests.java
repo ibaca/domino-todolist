@@ -1,6 +1,8 @@
 package com.progressoft.brix.domino.sample.items.client.requests;
 
+import com.progressoft.brix.domino.api.client.annotations.Classifier;
 import com.progressoft.brix.domino.api.client.annotations.Path;
+import com.progressoft.brix.domino.api.client.annotations.RequestFactory;
 import com.progressoft.brix.domino.api.client.request.Response;
 import com.progressoft.brix.domino.sample.items.shared.request.AddItemRequest;
 import com.progressoft.brix.domino.sample.items.shared.request.LoadItemsRequest;
@@ -13,8 +15,8 @@ import com.progressoft.brix.domino.sample.items.shared.response.ToggleItemRespon
 
 import javax.ws.rs.HttpMethod;
 
-@RequestGroup
-public interface TodoItemsRequestGroup {
+@RequestFactory("todo/")
+public interface TodoItemsRequests {
 
     @Path(AddItemRequest.PATH)
     Response<AddItemResponse> add(AddItemRequest addItemRequest);
@@ -30,4 +32,10 @@ public interface TodoItemsRequestGroup {
 
     @Path(ToggleItemRequest.PATH)
     Response<ToggleItemResponse> toggle(ToggleItemRequest toggleItemRequest);
+
+    @Path(ToggleItemRequest.PATH)
+    Response<ToggleItemResponse> test();
+
+    @Path(ToggleItemRequest.PATH)
+    Response<ToggleItemResponse> test2();
 }

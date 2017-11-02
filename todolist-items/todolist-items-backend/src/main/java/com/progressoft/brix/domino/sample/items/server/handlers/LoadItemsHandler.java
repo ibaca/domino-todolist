@@ -3,6 +3,7 @@ package com.progressoft.brix.domino.sample.items.server.handlers;
 import com.progressoft.brix.domino.api.server.handler.Handler;
 import com.progressoft.brix.domino.api.server.handler.RequestHandler;
 import com.progressoft.brix.domino.sample.items.server.TodoItemsStore;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.items.shared.request.LoadItemsRequest;
 import com.progressoft.brix.domino.sample.items.shared.response.LoadItemsResponse;
 
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
 
-@Handler(LoadItemsRequest.PATH)
+@Handler(TodoItem.ROOT_PATH + LoadItemsRequest.PATH)
 public class LoadItemsHandler implements RequestHandler<LoadItemsRequest, LoadItemsResponse> {
     private static final Logger LOGGER = Logger.getLogger(LoadItemsHandler.class.getName());
 

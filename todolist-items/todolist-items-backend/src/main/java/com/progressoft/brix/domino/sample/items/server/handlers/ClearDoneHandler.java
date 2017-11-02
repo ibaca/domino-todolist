@@ -3,6 +3,7 @@ package com.progressoft.brix.domino.sample.items.server.handlers;
 import com.progressoft.brix.domino.api.server.handler.Handler;
 import com.progressoft.brix.domino.api.server.handler.RequestHandler;
 import com.progressoft.brix.domino.sample.items.server.TodoItemsStore;
+import com.progressoft.brix.domino.sample.items.shared.TodoItem;
 import com.progressoft.brix.domino.sample.items.shared.request.RemoveRequest;
 import com.progressoft.brix.domino.sample.items.shared.response.RemoveResponse;
 
@@ -10,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-@Handler(value = RemoveRequest.REMOVE_DONE, classifier = RemoveRequest.REMOVE_DONE)
+@Handler(value = TodoItem.ROOT_PATH + RemoveRequest.REMOVE_DONE, classifier = "clearDone")
 public class ClearDoneHandler implements RequestHandler<RemoveRequest, RemoveResponse> {
     private static final Logger LOGGER = Logger.getLogger(ClearDoneHandler.class.getName());
 

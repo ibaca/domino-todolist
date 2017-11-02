@@ -9,7 +9,7 @@ import com.progressoft.brix.domino.sample.items.shared.response.ToggleItemRespon
 
 import java.util.logging.Logger;
 
-@Handler(ToggleItemRequest.PATH)
+@Handler(TodoItem.ROOT_PATH + ToggleItemRequest.PATH)
 public class ToggleItemHandler implements RequestHandler<ToggleItemRequest, ToggleItemResponse> {
     private static final Logger LOGGER = Logger.getLogger(ToggleItemHandler.class.getName());
 
