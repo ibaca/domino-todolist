@@ -130,6 +130,7 @@
                     <moduleShortName>app</moduleShortName>
                     <webappDirectory>${compilation.directory}</webappDirectory>
                     <codeserverWorkDir>${code.server.workdir}</codeserverWorkDir>
+                    <launcherDir>${basedir}/target/gwt/launcherDir</launcherDir>
                     <extra>${extra.directory}/app/gwt/extra</extra>
                     <compilerArgs>
                         <arg>-saveSource</arg>

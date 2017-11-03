@@ -73,6 +73,8 @@
         </dependency>
     </dependencies>
 
+
+
     <build>
         <resources>
             <resource>
@@ -85,6 +87,14 @@
                 </excludes>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+        </plugins>
 
         <pluginManagement>
             <plugins>
@@ -119,6 +129,11 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -129,5 +144,6 @@
         <module>todolist-layout</module>
         <module>todolist-items</module>
         <module>todolist-desktop-frontend</module>
+        <module>todolist-backend-tomcat</module>
     </modules>
 </project>
