@@ -1,8 +1,8 @@
 # domino-todolist
 Todo-list using [Domino](https://github.com/GwtDomino/domino) implementing UI with three different ways:
 
-- elemento + Polymer components
-- UIBinder + GWTMaterialDesign
+- [Elemento](https://github.com/hal/elemento) + [Polymer components](https://github.com/manolo/gwt-polymer-elements)
+- UIBinder + [GWTMaterialDesign](https://github.com/GwtMaterialDesign/gwt-material)
 - Desktop JavaFx (Requires a jdk with javafx support)
 
 ## How to build :
@@ -33,6 +33,10 @@ Todo-list using [Domino](https://github.com/GwtDomino/domino) implementing UI wi
   - in a terminal `cd todolist-desktop-frontend`
   - execute `mvn exec:java  -Dexec.args="localhost [port]"`
 
+- Run the Spring-Boot backend
+   this todo-list sample can also be started as a spring boot application
+   - in a terminal `cd todolist-backend-springboot`
+   - execute `mvn spring-boot:run`
 
 Thats it, have fun..
   
