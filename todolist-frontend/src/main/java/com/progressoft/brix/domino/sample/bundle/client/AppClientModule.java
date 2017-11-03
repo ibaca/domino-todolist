@@ -1,8 +1,7 @@
-package com.progressoft.brix.domino.sample;
+package com.progressoft.brix.domino.sample.bundle.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.progressoft.brix.domino.api.client.ClientApp;
-
 import java.util.logging.Logger;
 
 public class AppClientModule implements EntryPoint {
@@ -12,6 +11,5 @@ public class AppClientModule implements EntryPoint {
     public void onModuleLoad() {
         LOGGER.info("todo-list Application frontend have been initialized.");
         ClientApp.make().run();
-
     }
 }
